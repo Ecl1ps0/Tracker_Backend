@@ -1,0 +1,9 @@
+app:
+  port: "8080"
+
+db:
+  user: "postgres"
+  dbname: "proctor"
+  host: "localhost"
+  port: "5432"
+  sslmode: "disable"
