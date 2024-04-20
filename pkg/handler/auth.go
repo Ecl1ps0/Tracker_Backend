@@ -38,7 +38,7 @@ func (h *Handler) singIn(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
+	c.JSON(http.StatusOK, gin.H{
 		"token": token,
 	})
 }
