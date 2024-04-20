@@ -20,8 +20,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 	auth := router.Group("/auth")
 	{
-		auth.POST("/singin", h.singIn)
-		auth.POST("/singup", h.singUp)
+		auth.POST("/signin", h.singIn)
+		auth.POST("/signup", h.singUp)
 	}
 
 	messageTransfer := router.Group("/connection")
