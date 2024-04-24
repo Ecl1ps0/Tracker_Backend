@@ -36,6 +36,12 @@ func main() {
 
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
+	roles, err := services.Role.SetDefaultRoles()
+	if err != nil {
+		logrus.Fatalf("Fail to set default roles: %v", err)
+	}
+	logrus.Infof("Successfully set default roles: %s, %s, %s", roles[0].Name, roles[1].Name, roles[2].Name)
+
 	handlers := handler.NewHandler(services)
 
 	server := new(Proctor.Server)
