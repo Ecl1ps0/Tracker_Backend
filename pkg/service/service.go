@@ -15,14 +15,20 @@ type FileHandler interface {
 	SaveFile(data models.Data) (uint, error)
 }
 
+type Role interface {
+	SetDefaultRoles() ([]models.UserRole, error)
+}
+
 type Service struct {
 	Authorization
 	FileHandler
+	Role
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos),
 		FileHandler:   NewFileHandlerService(repos),
+		Role:          NewRoleService(repos),
 	}
 }
