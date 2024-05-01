@@ -19,10 +19,15 @@ type Role interface {
 	SetDefaultRoles() ([]models.UserRole, error)
 }
 
+type User interface {
+	GetProfile(userId uint) (models.User, error)
+}
+
 type Service struct {
 	Authorization
 	FileHandler
 	Role
+	User
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -30,5 +35,6 @@ func NewService(repos *repository.Repository) *Service {
 		Authorization: NewAuthService(repos),
 		FileHandler:   NewFileHandlerService(repos),
 		Role:          NewRoleService(repos),
+		User:          NewUserService(repos),
 	}
 }
