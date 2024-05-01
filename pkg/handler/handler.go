@@ -46,5 +46,13 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		messageTransfer.POST("/fileUpload", h.fileUpload)
 	}
 
+	api := router.Group("/api", h.userIdentity)
+	{
+		users := api.Group("/users")
+		{
+			users.GET("/profile", h.getProfile)
+		}
+	}
+
 	return router
 }
