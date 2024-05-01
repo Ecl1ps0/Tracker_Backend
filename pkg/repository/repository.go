@@ -19,10 +19,15 @@ type Role interface {
 	CreateDefault() ([]models.UserRole, error)
 }
 
+type User interface {
+	GetProfile(id uint) (models.User, error)
+}
+
 type Repository struct {
 	Authorization
 	FileHandler
 	Role
+	User
 }
 
 func NewRepository(db *gorm.DB) *Repository {
@@ -30,5 +35,6 @@ func NewRepository(db *gorm.DB) *Repository {
 		Authorization: NewAuthPostgres(db),
 		FileHandler:   NewFileHandlerPostgres(db),
 		Role:          NewRolePostgres(db),
+		User:          NewUserPostgres(db),
 	}
 }
