@@ -5,11 +5,14 @@ import (
 	"Proctor/pkg/handler"
 	"Proctor/pkg/repository"
 	"Proctor/pkg/service"
+	"context"
 	"fmt"
 	"github.com/joho/godotenv"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"os"
+	"os/signal"
+	"syscall"
 )
 
 func main() {
@@ -45,8 +48,22 @@ func main() {
 	handlers := handler.NewHandler(services)
 
 	server := new(Proctor.Server)
-	if err := server.Run(viper.GetString("app.port"), handlers.InitRoutes()); err != nil {
-		logrus.Fatalf("Error occured while running http server: %v", err)
+	go func() {
+		if err := server.Run(viper.GetString("app.port"), handlers.InitRoutes()); err != nil {
+			logrus.Fatalf("Error occured while running http server: %v", err)
+		}
+	}()
+
+	logrus.Info("App started")
+
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
+	<-quit
+
+	logrus.Info("App shutting down")
+
+	if err := server.Shutdown(context.Background()); err != nil {
+		logrus.Errorf("Error occured on server shutting down: %v", err)
 	}
 }
 
