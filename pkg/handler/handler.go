@@ -2,7 +2,9 @@ package handler
 
 import (
 	"Proctor/pkg/service"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/sirupsen/logrus"
 )
 
 type Handler struct {
@@ -17,6 +19,20 @@ func NewHandler(services *service.Service) *Handler {
 
 func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.New()
+
+	corsConfig := cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE"},
+		AllowHeaders:     []string{"Origin", "Authorization", "Content-Type"},
+		AllowCredentials: true,
+	}
+
+	router.Use(cors.New(corsConfig))
+
+	if err := router.SetTrustedProxies([]string{"127.0.0.1"}); err != nil {
+		logrus.Fatalf("Set trusted proxies error: %v\n", err)
+		return nil
+	}
 
 	auth := router.Group("/auth")
 	{
