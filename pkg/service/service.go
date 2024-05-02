@@ -21,6 +21,13 @@ type Role interface {
 
 type User interface {
 	GetProfile(userId uint) (models.User, error)
+	GetRoleByUserID(id uint) (uint, error)
+}
+
+type Task interface {
+	CreateTask(task models.Task) (uint, error)
+	GetTaskByID(id uint) (models.Task, error)
+	DeleteTask(id uint) error
 }
 
 type Service struct {
@@ -28,6 +35,7 @@ type Service struct {
 	FileHandler
 	Role
 	User
+	Task
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -36,5 +44,6 @@ func NewService(repos *repository.Repository) *Service {
 		FileHandler:   NewFileHandlerService(repos),
 		Role:          NewRoleService(repos),
 		User:          NewUserService(repos),
+		Task:          NewTaskService(repos),
 	}
 }
