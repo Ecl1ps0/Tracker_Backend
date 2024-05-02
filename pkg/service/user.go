@@ -21,3 +21,7 @@ func (s *UserService) GetProfile(userId uint) (models.User, error) {
 
 	return user, nil
 }
+
+func (s *UserService) GetRoleByUserID(id uint) (uint, error) {
+	return s.repo.GetRoleByID(id)
+}

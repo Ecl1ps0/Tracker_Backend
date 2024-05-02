@@ -11,7 +11,7 @@ type Authorization interface {
 }
 
 type FileHandler interface {
-	Create(data models.Report) (uint, error)
+	CreateReport(data models.Report) (uint, error)
 }
 
 type Role interface {
@@ -21,6 +21,13 @@ type Role interface {
 
 type User interface {
 	GetProfile(id uint) (models.User, error)
+	GetRoleByID(id uint) (uint, error)
+}
+
+type Task interface {
+	CreateTask(task models.Task) (uint, error)
+	GetTaskByID(id uint) (models.Task, error)
+	DeleteTask(id uint) error
 }
 
 type Repository struct {
@@ -28,6 +35,7 @@ type Repository struct {
 	FileHandler
 	Role
 	User
+	Task
 }
 
 func NewRepository(db *gorm.DB) *Repository {
@@ -36,5 +44,6 @@ func NewRepository(db *gorm.DB) *Repository {
 		FileHandler:   NewFileHandlerPostgres(db),
 		Role:          NewRolePostgres(db),
 		User:          NewUserPostgres(db),
+		Task:          NewTaskPostgres(db),
 	}
 }

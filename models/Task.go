@@ -12,5 +12,5 @@ type Task struct {
 	AccessFrom  *time.Time
 	AccessTo    *time.Time
 	TeacherID   uint
-	Teacher     User `gorm:"foreignKey:TeacherID"`
+	Teacher     *User `gorm:"foreignKey:TeacherID"`
 }

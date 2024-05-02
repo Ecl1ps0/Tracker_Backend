@@ -23,3 +23,13 @@ func (r *UserPostgres) GetProfile(id uint) (models.User, error) {
 
 	return user, nil
 }
+
+func (r *UserPostgres) GetRoleByID(id uint) (uint, error) {
+	var user models.User
+	result := r.db.Where("id = ?", id).First(&user)
+	if result.Error != nil {
+		return 0, result.Error
+	}
+
+	return user.RoleID, nil
+}

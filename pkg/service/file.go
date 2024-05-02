@@ -14,5 +14,5 @@ func NewFileHandlerService(repo repository.FileHandler) *FileHandlerService {
 }
 
 func (s *FileHandlerService) SaveFile(data models.Report) (uint, error) {
-	return s.repo.Create(data)
+	return s.repo.CreateReport(data)
 }
