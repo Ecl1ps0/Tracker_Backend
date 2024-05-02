@@ -22,7 +22,7 @@ func (h *Handler) fileUpload(c *gin.Context) {
 		return
 	}
 
-	var data models.Data
+	var data models.Report
 	for _, file := range files.Files {
 		switch file.Name {
 		case "logs":

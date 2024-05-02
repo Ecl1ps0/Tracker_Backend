@@ -12,7 +12,7 @@ type Authorization interface {
 }
 
 type FileHandler interface {
-	SaveFile(data models.Data) (uint, error)
+	SaveFile(data models.Report) (uint, error)
 }
 
 type Role interface {
