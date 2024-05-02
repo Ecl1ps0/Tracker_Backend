@@ -20,7 +20,7 @@ func (h *Handler) singUp(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, map[string]interface{}{
+	c.JSON(http.StatusOK, gin.H{
 		"id": id,
 	})
 }
