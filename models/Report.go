@@ -8,5 +8,5 @@ type Report struct {
 	Report            []byte `binding:"required"`
 	Clipboard         []byte `binding:"required"`
 	StudentSolutionID uint
-	StudentSolution   StudentSolution `gorm:"foreignKey:StudentSolutionID"`
+	StudentSolution   *StudentSolution `gorm:"foreignKey:StudentSolutionID"`
 }
