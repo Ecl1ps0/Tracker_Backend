@@ -1,12 +1,16 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+	"time"
+)
 
 type Task struct {
 	gorm.Model
 	Title       string `binding:"required"`
 	Description string `binding:"required"`
+	AccessFrom  *time.Time
+	AccessTo    *time.Time
 	TeacherID   uint
-	Teacher     User    `gorm:"foreignKey:TeacherID"`
-	Students    []*User `gorm:"many2many:student_task;"`
+	Teacher     User `gorm:"foreignKey:TeacherID"`
 }

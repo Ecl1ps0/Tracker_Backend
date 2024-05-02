@@ -11,7 +11,7 @@ type Authorization interface {
 }
 
 type FileHandler interface {
-	Create(data models.Data) (uint, error)
+	Create(data models.Report) (uint, error)
 }
 
 type Role interface {

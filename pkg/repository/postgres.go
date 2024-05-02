@@ -17,7 +17,8 @@ func NewPostgresDB(dsn string) (*gorm.DB, error) {
 		&models.UserRole{},
 		&models.Task{},
 		&models.Report{},
-		&models.Data{},
+		&models.StudentTask{},
+		&models.StudentSolution{},
 	); err != nil {
 		return nil, err
 	}

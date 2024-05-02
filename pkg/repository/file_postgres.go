@@ -13,7 +13,7 @@ func NewFileHandlerPostgres(db *gorm.DB) *FileHandlerPostgres {
 	return &FileHandlerPostgres{db: db}
 }
 
-func (r *FileHandlerPostgres) Create(data models.Data) (uint, error) {
+func (r *FileHandlerPostgres) Create(data models.Report) (uint, error) {
 	if result := r.db.Create(&data); result.Error != nil {
 		return 0, nil
 	}

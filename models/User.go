@@ -11,5 +11,4 @@ type User struct {
 	RoleID   uint
 	Role     *UserRole `gorm:"foreignKey:RoleID"`
 	Password string    `binding:"required"`
-	Tasks    []*Task   `gorm:"many2many:student_task;"`
 }
