@@ -22,6 +22,13 @@ func (s *UserService) GetProfile(userId uint) (models.User, error) {
 	return user, nil
 }
 
+func (s *UserService) AddStudentToTask(studentId, taskId uint) error {
+	return s.repo.AddStudentToTask(models.StudentTask{
+		StudentID: studentId,
+		TaskID:    taskId,
+	})
+}
+
 func (s *UserService) GetRoleByUserID(id uint) (uint, error) {
 	return s.repo.GetRoleByID(id)
 }
