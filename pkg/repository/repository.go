@@ -21,12 +21,17 @@ type Role interface {
 
 type User interface {
 	GetProfile(id uint) (models.User, error)
+	AddStudentToTask(studentTask models.StudentTask) error
 	GetRoleByID(id uint) (uint, error)
 }
 
 type Task interface {
 	CreateTask(task models.Task) (uint, error)
+	GetAllTasks() ([]models.Task, error)
 	GetTaskByID(id uint) (models.Task, error)
+	GetAllTeacherTasks(id uint) ([]models.Task, error)
+	GetAllStudentTasks(id uint) ([]models.Task, error)
+	UpdateTask(task models.Task) error
 	DeleteTask(id uint) error
 }
 
