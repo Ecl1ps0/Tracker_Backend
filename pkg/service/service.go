@@ -30,7 +30,7 @@ type Task interface {
 	GetAllTasks() ([]models.Task, error)
 	GetTaskByID(id uint) (models.Task, error)
 	GetAllTeacherTasks(id uint) ([]models.Task, error)
-	GetAllStudentTasks(id uint) ([]models.Task, error)
+	GetAllStudentTasks(id uint) ([]models.StudentTask, error)
 	UpdateTask(task models.Task) error
 	DeleteTask(id uint) error
 }
