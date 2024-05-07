@@ -29,7 +29,7 @@ func (s *TaskService) GetAllTeacherTasks(id uint) ([]models.Task, error) {
 	return s.repo.GetAllTeacherTasks(id)
 }
 
-func (s *TaskService) GetAllStudentTasks(id uint) ([]models.Task, error) {
+func (s *TaskService) GetAllStudentTasks(id uint) ([]models.StudentTask, error) {
 	return s.repo.GetAllStudentTasks(id)
 }
 

@@ -50,9 +50,12 @@ func (r *TaskPostgres) GetAllTeacherTasks(id uint) ([]models.Task, error) {
 	return tasks, nil
 }
 
-func (r *TaskPostgres) GetAllStudentTasks(id uint) ([]models.Task, error) {
-	var tasks []models.Task
-	if result := r.db.Joins("join student_tasks on tasks.id = student_tasks.task_id").Where("student_tasks.student_id = ?", id).Find(&tasks); result.Error != nil {
+func (r *TaskPostgres) GetAllStudentTasks(id uint) ([]models.StudentTask, error) {
+	var tasks []models.StudentTask
+	if result := r.db.Preload("Task").Table("student_tasks").
+		Joins("join tasks on student_tasks.task_id = tasks.id").
+		Where("student_tasks.student_id = ?", id).
+		Find(&tasks); result.Error != nil {
 		return nil, result.Error
 	}
 
