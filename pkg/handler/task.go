@@ -2,6 +2,7 @@ package handler
 
 import (
 	"Proctor/models"
+	"Proctor/models/DTO"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -25,13 +26,20 @@ func (h *Handler) createTask(c *gin.Context) {
 		return
 	}
 
-	var input models.Task
+	var input DTO.TaskDTO
 	if err := c.BindJSON(&input); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	taskId, err := h.service.Task.CreateTask(input)
+	var task models.Task
+	task.Title = input.Title
+	task.Description = input.Description
+	task.AccessFrom = input.AccessFrom
+	task.AccessTo = input.AccessTo
+	task.TeacherID = roleId
+
+	taskId, err := h.service.Task.CreateTask(task)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
