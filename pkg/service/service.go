@@ -35,12 +35,17 @@ type Task interface {
 	DeleteTask(id uint) error
 }
 
+type Solution interface {
+	CreateSolution(solution models.StudentSolution) (uint, error)
+}
+
 type Service struct {
 	Authorization
 	FileHandler
 	Role
 	User
 	Task
+	Solution
 }
 
 func NewService(repos *repository.Repository) *Service {
@@ -50,5 +55,6 @@ func NewService(repos *repository.Repository) *Service {
 		Role:          NewRoleService(repos),
 		User:          NewUserService(repos),
 		Task:          NewTaskService(repos),
+		Solution:      NewSolutionService(repos),
 	}
 }

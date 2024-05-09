@@ -13,5 +13,5 @@ type StudentSolution struct {
 	TimeEnd        *time.Time
 	CheatingResult decimal.Decimal `sql:"type:decimal(5,2);default:0;"`
 	StudentTaskID  uint
-	StudentTask    StudentTask `gorm:"foreignKey:StudentTaskID"`
+	StudentTask    *StudentTask `gorm:"foreignKey:StudentTaskID"`
 }

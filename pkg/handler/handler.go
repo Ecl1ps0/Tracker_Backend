@@ -40,10 +40,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		auth.POST("/signup", h.singUp)
 	}
 
-	messageTransfer := router.Group("/connection")
+	connection := router.Group("/connection")
 	{
-		messageTransfer.GET("/ws", h.webSocket)
-		messageTransfer.POST("/fileUpload", h.fileUpload)
+		connection.GET("/ws", h.webSocket)
 	}
 
 	api := router.Group("/api", h.userIdentity)
@@ -63,6 +62,12 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			tasks.POST("/create", h.createTask)
 			tasks.PUT("/update/:id", h.updateTask)
 			tasks.DELETE("/delete/:id", h.deleteTask)
+		}
+
+		solution := api.Group("/solution")
+		{
+			solution.POST("/on-student-task/:id", h.createSolution)
+			solution.POST("/fileUpload", h.fileUpload)
 		}
 	}
 

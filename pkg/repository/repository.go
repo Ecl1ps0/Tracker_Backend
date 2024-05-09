@@ -35,12 +35,17 @@ type Task interface {
 	DeleteTask(id uint) error
 }
 
+type Solution interface {
+	CreateSolution(solution models.StudentSolution) (uint, error)
+}
+
 type Repository struct {
 	Authorization
 	FileHandler
 	Role
 	User
 	Task
+	Solution
 }
 
 func NewRepository(db *gorm.DB) *Repository {
@@ -50,5 +55,6 @@ func NewRepository(db *gorm.DB) *Repository {
 		Role:          NewRolePostgres(db),
 		User:          NewUserPostgres(db),
 		Task:          NewTaskPostgres(db),
+		Solution:      NewSolutionPostgres(db),
 	}
 }
