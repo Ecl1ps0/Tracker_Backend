@@ -10,7 +10,7 @@ type Authorization interface {
 	GetUser(email, password string) (models.User, error)
 }
 
-type FileHandler interface {
+type Report interface {
 	CreateReport(data models.Report) (uint, error)
 }
 
@@ -41,7 +41,7 @@ type Solution interface {
 
 type Repository struct {
 	Authorization
-	FileHandler
+	Report
 	Role
 	User
 	Task
@@ -51,7 +51,7 @@ type Repository struct {
 func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{
 		Authorization: NewAuthPostgres(db),
-		FileHandler:   NewFileHandlerPostgres(db),
+		Report:        NewReportPostgres(db),
 		Role:          NewRolePostgres(db),
 		User:          NewUserPostgres(db),
 		Task:          NewTaskPostgres(db),
