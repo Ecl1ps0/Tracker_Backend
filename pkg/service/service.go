@@ -11,8 +11,8 @@ type Authorization interface {
 	ParseToken(token string) (uint, error)
 }
 
-type FileHandler interface {
-	SaveFile(data models.Report) (uint, error)
+type Report interface {
+	CreateReport(data models.Report) (uint, error)
 }
 
 type Role interface {
@@ -41,7 +41,7 @@ type Solution interface {
 
 type Service struct {
 	Authorization
-	FileHandler
+	Report
 	Role
 	User
 	Task
@@ -51,7 +51,7 @@ type Service struct {
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos),
-		FileHandler:   NewFileHandlerService(repos),
+		Report:        NewReportService(repos),
 		Role:          NewRoleService(repos),
 		User:          NewUserService(repos),
 		Task:          NewTaskService(repos),

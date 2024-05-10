@@ -67,7 +67,11 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		solution := api.Group("/solution")
 		{
 			solution.POST("/on-student-task/:id", h.createSolution)
-			solution.POST("/fileUpload", h.fileUpload)
+		}
+
+		report := api.Group("/report")
+		{
+			report.POST("/createReport", h.createReport)
 		}
 	}
 

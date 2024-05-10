@@ -12,10 +12,11 @@ type FileData struct {
 }
 
 type FileUpload struct {
-	Files []FileData
+	StudentTaskID uint
+	Files         []FileData
 }
 
-func (h *Handler) fileUpload(c *gin.Context) {
+func (h *Handler) createReport(c *gin.Context) {
 	var files FileUpload
 	if err := c.ShouldBindJSON(&files); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -34,11 +35,21 @@ func (h *Handler) fileUpload(c *gin.Context) {
 		}
 	}
 
-	id, err := h.service.FileHandler.SaveFile(data)
+	id, err := h.service.Report.CreateReport(data)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
+
+	solutionCtx, ok := Solutions.Load(files.StudentTaskID)
+	if !ok {
+		newErrorResponse(c, http.StatusInternalServerError, "Fuck")
+		return
+	}
+
+	solutionContext := solutionCtx.(models.StudentSolution)
+	solutionContext.ReportID = id
+	Solutions.Store(files.StudentTaskID, solutionContext)
 
 	c.JSON(http.StatusOK, gin.H{
 		"dataId": id,

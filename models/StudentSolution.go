@@ -14,4 +14,6 @@ type StudentSolution struct {
 	CheatingResult decimal.Decimal `sql:"type:decimal(5,2);default:0;"`
 	StudentTaskID  uint
 	StudentTask    *StudentTask `gorm:"foreignKey:StudentTaskID"`
+	ReportID       uint
+	Report         *Report `gorm:"foreignKey:ReportID"`
 }
