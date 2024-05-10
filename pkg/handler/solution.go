@@ -19,7 +19,7 @@ type WebsocketMessage struct {
 }
 
 var upgrader = websocket.Upgrader{}
-var solutions sync.Map
+var Solutions sync.Map
 
 func (h *Handler) webSocket(c *gin.Context) {
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
@@ -63,24 +63,30 @@ func (h *Handler) webSocket(c *gin.Context) {
 			solution.TimeStart = &startTime
 			solution.StudentTaskID = message.StudentTaskID
 
-			solutions.Store(strconv.Itoa(int(message.StudentTaskID)), solution)
+			solutionCtx, loaded := Solutions.LoadOrStore(message.StudentTaskID, solution)
+			if loaded {
+				solutionContext := solutionCtx.(models.StudentSolution)
+
+				solutionContext.TimeStart = &startTime
+				solutionContext.StudentTaskID = message.StudentTaskID
+
+				Solutions.Store(message.StudentTaskID, solutionContext)
+			}
+
 			break
 
 		case "finish":
 			finishTime = time.Now()
 
-			solutionCtx, ok := solutions.Load(strconv.Itoa(int(message.StudentTaskID)))
+			solutionCtx, ok := Solutions.Load(message.StudentTaskID)
 			if !ok {
 				newErrorResponse(c, http.StatusInternalServerError, "There is no such StudentTaskID in context!")
 				continue
 			}
 
 			solutionContext := solutionCtx.(models.StudentSolution)
-
 			solutionContext.TimeEnd = &finishTime
-			solutionContext.StudentTaskID = message.StudentTaskID
-
-			solutions.Store(strconv.Itoa(int(message.StudentTaskID)), solutionContext)
+			Solutions.Store(message.StudentTaskID, solutionContext)
 			break
 		}
 
@@ -104,14 +110,13 @@ func (h *Handler) createSolution(c *gin.Context) {
 		return
 	}
 
-	solutionContext, ok := solutions.Load(strconv.Itoa(studentTaskId))
+	solutionContext, ok := Solutions.Load(uint(studentTaskId))
 	if !ok {
 		newErrorResponse(c, http.StatusInternalServerError, "Fail to get solution from context!")
 		return
 	}
 
 	solution := solutionContext.(models.StudentSolution)
-
 	solution.Solution = solutionText.Solution
 
 	solutionId, err := h.service.Solution.CreateSolution(solution)
@@ -120,7 +125,7 @@ func (h *Handler) createSolution(c *gin.Context) {
 		return
 	}
 
-	solutions.Delete(strconv.Itoa(studentTaskId))
+	Solutions.Delete(strconv.Itoa(studentTaskId))
 
 	c.JSON(http.StatusOK, gin.H{
 		"solutionId": solutionId,
