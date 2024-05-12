@@ -6,6 +6,33 @@ import (
 	"strconv"
 )
 
+func (h *Handler) getAllUsers(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	roleId, err := h.service.User.GetRoleByUserID(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if roleId != 3 {
+		newErrorResponse(c, http.StatusForbidden, "Only admins can observe all users!")
+		return
+	}
+
+	users, err := h.service.User.GetAllUsers()
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, users)
+}
+
 func (h *Handler) getProfile(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
@@ -37,7 +64,7 @@ func (h *Handler) addStudentToTask(c *gin.Context) {
 
 	taskId, err := strconv.Atoi(c.Param("taskID"))
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -54,7 +81,7 @@ func (h *Handler) addStudentToTask(c *gin.Context) {
 
 	studentId, err := strconv.Atoi(c.Param("studentID"))
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 

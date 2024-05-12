@@ -13,6 +13,15 @@ func NewUserPostgres(db *gorm.DB) *UserPostgres {
 	return &UserPostgres{db: db}
 }
 
+func (r *UserPostgres) GetAllUsers() ([]models.User, error) {
+	var users []models.User
+	if result := r.db.Find(&users); result.Error != nil {
+		return nil, result.Error
+	}
+
+	return users, nil
+}
+
 func (r *UserPostgres) GetProfile(id uint) (models.User, error) {
 	var user models.User
 	result := r.db.Where("id = ?", id).First(&user)
