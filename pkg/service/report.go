@@ -13,6 +13,10 @@ func NewReportService(repo repository.Report) *ReportService {
 	return &ReportService{repo: repo}
 }
 
+func (s *ReportService) GetAllReports() ([]models.Report, error) {
+	return s.repo.GetAllReports()
+}
+
 func (s *ReportService) CreateReport(data models.Report) (uint, error) {
 	return s.repo.CreateReport(data)
 }

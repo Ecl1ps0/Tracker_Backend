@@ -96,7 +96,7 @@ func (h *Handler) getTaskByID(c *gin.Context) {
 func (h *Handler) getAllTeacherTasks(c *gin.Context) {
 	teacherId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
@@ -112,7 +112,7 @@ func (h *Handler) getAllTeacherTasks(c *gin.Context) {
 func (h *Handler) getAllStudentTasks(c *gin.Context) {
 	studentId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 

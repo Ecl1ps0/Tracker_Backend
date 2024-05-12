@@ -2,6 +2,7 @@ package repository
 
 import (
 	"Proctor/models"
+	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 )
 
@@ -11,6 +12,7 @@ type Authorization interface {
 }
 
 type Report interface {
+	GetAllReports() ([]models.Report, error)
 	CreateReport(data models.Report) (uint, error)
 }
 
@@ -20,6 +22,7 @@ type Role interface {
 }
 
 type User interface {
+	GetAllUsers() ([]models.User, error)
 	GetProfile(id uint) (models.User, error)
 	AddStudentToTask(studentTask models.StudentTask) error
 	GetRoleByID(id uint) (uint, error)
@@ -36,7 +39,11 @@ type Task interface {
 }
 
 type Solution interface {
+	GetAllSolutions() ([]models.StudentSolution, error)
 	CreateSolution(solution models.StudentSolution) (uint, error)
+	UpdateCheatingRate(id uint, rate decimal.Decimal) error
+	UpdateFinalGrade(id uint, grade decimal.Decimal) error
+	GetTeacherBySolutionID(id uint) (uint, error)
 }
 
 type Repository struct {

@@ -2,7 +2,9 @@ package service
 
 import (
 	"Proctor/models"
+	"Proctor/models/DTO"
 	"Proctor/pkg/repository"
+	"github.com/shopspring/decimal"
 )
 
 type Authorization interface {
@@ -12,6 +14,7 @@ type Authorization interface {
 }
 
 type Report interface {
+	GetAllReports() ([]models.Report, error)
 	CreateReport(data models.Report) (uint, error)
 }
 
@@ -20,9 +23,11 @@ type Role interface {
 }
 
 type User interface {
-	GetProfile(userId uint) (models.User, error)
+	GetAllUsers() ([]DTO.UserDTO, error)
+	GetProfile(userId uint) (DTO.UserDTO, error)
 	AddStudentToTask(studentId, taskId uint) error
 	GetRoleByUserID(id uint) (uint, error)
+	UserToDTO(user models.User) DTO.UserDTO
 }
 
 type Task interface {
@@ -36,7 +41,11 @@ type Task interface {
 }
 
 type Solution interface {
+	GetAllSolutions() ([]models.StudentSolution, error)
 	CreateSolution(solution models.StudentSolution) (uint, error)
+	UpdateCheatingRate(id uint, dto DTO.SolutionCheatingRateDTO) error
+	UpdateFinalGrade(id uint, grade decimal.Decimal) error
+	GetTeacherBySolutionID(id uint) (uint, error)
 }
 
 type Service struct {
