@@ -49,6 +49,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		users := api.Group("/users")
 		{
+			users.GET("/", h.getAllUsers)
 			users.GET("/profile", h.getProfile)
 			users.POST("/:studentID/add-to-task/:taskID", h.addStudentToTask)
 		}
@@ -64,14 +65,18 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			tasks.DELETE("/delete/:id", h.deleteTask)
 		}
 
-		solution := api.Group("/solution")
+		solutions := api.Group("/solutions")
 		{
-			solution.POST("/on-student-task/:id", h.createSolution)
+			solutions.GET("/", h.getAllSolutions)
+			solutions.POST("/on-student-task/:id", h.createSolution)
+			solutions.PUT("/update-cheating-rate/:id", h.updateSolutionCheatingRate)
+			solutions.PUT("/update-final-grade/:id", h.updateSolutionFinalGrade)
 		}
 
-		report := api.Group("/report")
+		reports := api.Group("/reports")
 		{
-			report.POST("/createReport", h.createReport)
+			reports.GET("/", h.getAllReports)
+			reports.POST("/createReport", h.createReport)
 		}
 	}
 
