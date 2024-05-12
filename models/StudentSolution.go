@@ -11,7 +11,8 @@ type StudentSolution struct {
 	Solution       string `binding:"required"`
 	TimeStart      *time.Time
 	TimeEnd        *time.Time
-	CheatingResult decimal.Decimal `sql:"type:decimal(5,2);default:0;"`
+	CheatingResult decimal.Decimal `sql:"type:decimal(5,2);check:(CheatingResult >= 0 AND CheatingResult <= 100);default:0;"`
+	FinalGrade     decimal.Decimal `sql:"type:decimal(5,2);check:(FinalResult >= 0 AND FinalResult <= 100);default:0;"`
 	StudentTaskID  uint
 	StudentTask    *StudentTask `gorm:"foreignKey:StudentTaskID"`
 	ReportID       uint
