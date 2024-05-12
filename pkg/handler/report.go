@@ -16,6 +16,33 @@ type FileUpload struct {
 	Files         []FileData
 }
 
+func (h *Handler) getAllReports(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	roleId, err := h.service.User.GetRoleByUserID(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if roleId != 3 {
+		newErrorResponse(c, http.StatusForbidden, "Only admins can observe all reports!")
+		return
+	}
+
+	reports, err := h.service.Report.GetAllReports()
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, reports)
+}
+
 func (h *Handler) createReport(c *gin.Context) {
 	var files FileUpload
 	if err := c.ShouldBindJSON(&files); err != nil {
