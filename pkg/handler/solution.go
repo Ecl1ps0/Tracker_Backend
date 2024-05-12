@@ -97,6 +97,33 @@ func (h *Handler) webSocket(c *gin.Context) {
 	}
 }
 
+func (h *Handler) getAllSolutions(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	roleId, err := h.service.User.GetRoleByUserID(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if roleId != 3 {
+		newErrorResponse(c, http.StatusForbidden, "Only admin can update solution!")
+		return
+	}
+
+	solutions, err := h.service.Solution.GetAllSolutions()
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, solutions)
+}
+
 func (h *Handler) createSolution(c *gin.Context) {
 	studentTaskId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -130,4 +157,86 @@ func (h *Handler) createSolution(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"solutionId": solutionId,
 	})
+}
+
+func (h *Handler) updateSolutionCheatingRate(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	roleId, err := h.service.User.GetRoleByUserID(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if roleId != 3 {
+		newErrorResponse(c, http.StatusForbidden, "Only admin can update solution!")
+		return
+	}
+
+	var cheatingRate DTO.SolutionCheatingRateDTO
+	if err := c.BindJSON(&cheatingRate); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	solutionId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := h.service.Solution.UpdateCheatingRate(uint(solutionId), cheatingRate); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.Status(http.StatusOK)
+}
+
+func (h *Handler) updateSolutionFinalGrade(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	roleId, err := h.service.User.GetRoleByUserID(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	solutionId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	teacherId, err := h.service.Solution.GetTeacherBySolutionID(uint(solutionId))
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if teacherId != userId && roleId != 3 {
+		newErrorResponse(c, http.StatusForbidden, "Only teacher created task and admins can update grade!")
+		return
+	}
+
+	var grade DTO.SolutionFinalGradeDTO
+	if err := c.BindJSON(&grade); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := h.service.Solution.UpdateFinalGrade(uint(solutionId), grade.FinalGrade); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.Status(http.StatusOK)
 }
