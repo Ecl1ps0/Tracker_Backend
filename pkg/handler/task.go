@@ -37,7 +37,7 @@ func (h *Handler) createTask(c *gin.Context) {
 	task.Description = input.Description
 	task.AccessFrom = input.AccessFrom
 	task.AccessTo = input.AccessTo
-	task.TeacherID = roleId
+	task.TeacherID = userId
 
 	taskId, err := h.service.Task.CreateTask(task)
 	if err != nil {
