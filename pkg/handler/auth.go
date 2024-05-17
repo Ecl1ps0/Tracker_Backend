@@ -7,6 +7,18 @@ import (
 	"net/http"
 )
 
+// @Summary SignUp
+// @Tags auth
+// @Description create account
+// @ID create-account
+// @Accept  json
+// @Produce  json
+// @Param input body models.User true "account info"
+// @Success 200 {integer} integer 1
+// @Failure 400,404 {object} Error
+// @Failure 500 {object} Error
+// @Failure default {object} Error
+// @Router /auth/signup [post]
 func (h *Handler) singUp(c *gin.Context) {
 	var input models.User
 	if err := c.BindJSON(&input); err != nil {
@@ -25,6 +37,18 @@ func (h *Handler) singUp(c *gin.Context) {
 	})
 }
 
+// @Summary SignIn
+// @Tags auth
+// @Description login
+// @ID login
+// @Accept  json
+// @Produce  json
+// @Param input body DTO.UserDTO true "credentials"
+// @Success 200 {string} string "token"
+// @Failure 400,404 {object} Error
+// @Failure 500 {object} Error
+// @Failure default {object} Error
+// @Router /auth/signin [post]
 func (h *Handler) singIn(c *gin.Context) {
 	var input DTO.SignInUserDTO
 	if err := c.BindJSON(&input); err != nil {

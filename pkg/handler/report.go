@@ -16,6 +16,17 @@ type FileUpload struct {
 	Files         []FileData
 }
 
+// @Summary Get all reports
+// @Security ApiKeyAuth
+// @Tags reports
+// @Description get a list of all reports, accessible only by admins
+// @ID get-all-reports
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} models.Report "List of all reports"
+// @Failure 403 {object} Error "Access denied"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/reports [get]
 func (h *Handler) getAllReports(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
@@ -43,6 +54,18 @@ func (h *Handler) getAllReports(c *gin.Context) {
 	c.JSON(http.StatusOK, reports)
 }
 
+// @Summary Create a report
+// @Security ApiKeyAuth
+// @Tags reports
+// @Description create a new report with uploaded files
+// @ID create-report
+// @Accept  json
+// @Produce  json
+// @Param files body FileUpload true "Files for the report"
+// @Success 200 {object} map[string]interface{} "Report creation successful with data ID returned"
+// @Failure 400 {object} Error "Bad request due to invalid input"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/reports/createReport [post]
 func (h *Handler) createReport(c *gin.Context) {
 	var files FileUpload
 	if err := c.ShouldBindJSON(&files); err != nil {

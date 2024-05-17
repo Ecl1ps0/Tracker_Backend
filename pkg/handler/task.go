@@ -8,6 +8,17 @@ import (
 	"strconv"
 )
 
+// @Summary Create a new task
+// @Security ApiKeyAuth
+// @Tags tasks
+// @Description create a new task
+// @ID create-task
+// @Accept  json
+// @Produce  json
+// @Success 201 {object} models.Task "Task created successfully"
+// @Failure 400 {object} Error "Invalid input data"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/tasks/create [post]
 func (h *Handler) createTask(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
@@ -50,6 +61,16 @@ func (h *Handler) createTask(c *gin.Context) {
 	})
 }
 
+// @Summary Get all tasks
+// @Security ApiKeyAuth
+// @Tags tasks
+// @Description get a list of all tasks
+// @ID get-all-tasks
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} models.Task "List of all tasks"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/tasks [get]
 func (h *Handler) getAllTasks(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
@@ -77,6 +98,18 @@ func (h *Handler) getAllTasks(c *gin.Context) {
 	c.JSON(http.StatusOK, tasks)
 }
 
+// @Summary Get a task by ID
+// @Security ApiKeyAuth
+// @Tags tasks
+// @Description get a specific task by its ID
+// @ID get-task-by-id
+// @Param id path int true "Task ID"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} models.Task "Detailed information about a task"
+// @Failure 404 {object} Error "Task not found"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/tasks/{id} [get]
 func (h *Handler) getTaskByID(c *gin.Context) {
 	taskId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -93,6 +126,18 @@ func (h *Handler) getTaskByID(c *gin.Context) {
 	c.JSON(http.StatusOK, task)
 }
 
+// @Summary Get all tasks for a specific teacher
+// @Security ApiKeyAuth
+// @Tags tasks
+// @Description get all tasks created by a specific teacher
+// @ID get-all-teacher-tasks
+// @Param id path int true "Teacher ID"
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} models.Task "List of tasks created by the teacher"
+// @Failure 400 {object} Error "Invalid teacher ID"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/tasks/teacher/{id} [get]
 func (h *Handler) getAllTeacherTasks(c *gin.Context) {
 	teacherId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -109,6 +154,18 @@ func (h *Handler) getAllTeacherTasks(c *gin.Context) {
 	c.JSON(http.StatusOK, tasks)
 }
 
+// @Summary Get all tasks for a specific student
+// @Security ApiKeyAuth
+// @Tags tasks
+// @Description get all tasks assigned to a specific student
+// @ID get-all-student-tasks
+// @Param id path int true "Student ID"
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} models.Task "List of tasks assigned to the student"
+// @Failure 400 {object} Error "Invalid student ID"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/tasks/student/{id} [get]
 func (h *Handler) getAllStudentTasks(c *gin.Context) {
 	studentId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -125,6 +182,21 @@ func (h *Handler) getAllStudentTasks(c *gin.Context) {
 	c.JSON(http.StatusOK, tasks)
 }
 
+// @Summary Update a task
+// @Security ApiKeyAuth
+// @Tags tasks
+// @Description update details of a specific task, accessible only by the task's creator or an admin
+// @ID update-task
+// @Param id path int true "Task ID"
+// @Accept  json
+// @Produce  json
+// @Param task body models.Task true "Task details to update"
+// @Success 200 {object} nil "Task updated successfully"
+// @Failure 400 {object} Error "Invalid parameter or bad request"
+// @Failure 403 {object} Error "Access denied"
+// @Failure 404 {object} Error "Task not found"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/tasks/update/{id} [put]
 func (h *Handler) updateTask(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
@@ -171,6 +243,20 @@ func (h *Handler) updateTask(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
+// @Summary Delete a task
+// @Security ApiKeyAuth
+// @Tags tasks
+// @Description delete a specific task, accessible only by the task's creator or an admin
+// @ID delete-task
+// @Param id path int true "Task ID"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} nil "Task deleted successfully"
+// @Failure 400 {object} Error "Invalid task ID"
+// @Failure 403 {object} Error "Access denied"
+// @Failure 404 {object} Error "Task not found"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/tasks/delete/{id} [delete]
 func (h *Handler) deleteTask(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {

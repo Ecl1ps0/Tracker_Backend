@@ -5,6 +5,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type Handler struct {
@@ -33,6 +35,12 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		logrus.Fatalf("Set trusted proxies error: %v\n", err)
 		return nil
 	}
+
+	router.Static("/docs", "./docs")
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler,
+		ginSwagger.URL("http://localhost:8080/docs/swagger.json"),
+		ginSwagger.DefaultModelsExpandDepth(-1)))
 
 	auth := router.Group("/auth")
 	{
