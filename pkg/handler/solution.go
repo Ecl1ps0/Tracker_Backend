@@ -124,6 +124,17 @@ func (h *Handler) getAllSolutions(c *gin.Context) {
 	c.JSON(http.StatusOK, solutions)
 }
 
+// @Summary Get all solutions
+// @Security ApiKeyAuth
+// @Tags solutions
+// @Description get a list of all solutions, accessible only by admins
+// @ID get-all-solutions
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} models.StudentSolution "List of all solutions"
+// @Failure 403 {object} Error "Access denied"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/solutions [get]
 func (h *Handler) createSolution(c *gin.Context) {
 	studentTaskId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
@@ -159,6 +170,20 @@ func (h *Handler) createSolution(c *gin.Context) {
 	})
 }
 
+// @Summary Update the cheating rate of a solution
+// @Security ApiKeyAuth
+// @Tags solutions
+// @Description update the cheating rate for a specific solution, accessible only by admins
+// @ID update-solution-cheating-rate
+// @Param id path int true "Solution ID"
+// @Param cheatingRate body DTO.SolutionCheatingRateDTO true "Cheating rate data"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} nil "Cheating rate updated successfully"
+// @Failure 400 {object} Error "Invalid parameter or bad request"
+// @Failure 403 {object} Error "Access denied"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/solutions/update-cheating-rate/{id} [put]
 func (h *Handler) updateSolutionCheatingRate(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
@@ -197,6 +222,20 @@ func (h *Handler) updateSolutionCheatingRate(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
+// @Summary Update the final grade of a solution
+// @Security ApiKeyAuth
+// @Tags solutions
+// @Description update the final grade for a specific solution, accessible only by the task's teacher or admins
+// @ID update-solution-final-grade
+// @Param id path int true "Solution ID"
+// @Param grade body DTO.SolutionFinalGradeDTO true "Final grade data"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} nil "Final grade updated successfully"
+// @Failure 400 {object} Error "Invalid parameter or bad request"
+// @Failure 403 {object} Error "Access denied"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/solutions/update-final-grade/{id} [put]
 func (h *Handler) updateSolutionFinalGrade(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
