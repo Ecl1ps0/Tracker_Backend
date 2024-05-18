@@ -97,6 +97,17 @@ func (h *Handler) webSocket(c *gin.Context) {
 	}
 }
 
+// @Summary Get all solutions
+// @Security ApiKeyAuth
+// @Tags solutions
+// @Description get a list of all solutions, accessible only by admins
+// @ID get-all-solutions
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} models.StudentSolution "List of all solutions"
+// @Failure 403 {object} Error "Access denied"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/solutions [get]
 func (h *Handler) getAllSolutions(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
@@ -124,17 +135,19 @@ func (h *Handler) getAllSolutions(c *gin.Context) {
 	c.JSON(http.StatusOK, solutions)
 }
 
-// @Summary Get all solutions
+// @Summary Create a solution
 // @Security ApiKeyAuth
 // @Tags solutions
-// @Description get a list of all solutions, accessible only by admins
-// @ID get-all-solutions
+// @Description create a new solution for a student task
+// @ID create-solution
+// @Param id path int true "Student Task ID"
+// @Param solutionText body DTO.SolutionDTO true "Solution details"
 // @Accept  json
 // @Produce  json
-// @Success 200 {array} models.StudentSolution "List of all solutions"
-// @Failure 403 {object} Error "Access denied"
-// @Failure 500 {object} Error "Internal server error"
-// @Router /api/solutions [get]
+// @Success 200 {object} map[string]interface{} "Solution created successfully with solution ID returned"
+// @Failure 400 {object} Error "Bad request due to invalid input"
+// @Failure 500 {object} Error "Internal server error or fail to get solution context"
+// @Router /api/solutions/on-student-task/{id} [post]
 func (h *Handler) createSolution(c *gin.Context) {
 	studentTaskId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
