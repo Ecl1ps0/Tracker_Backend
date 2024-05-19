@@ -156,6 +156,66 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/solutions/on-student-task/{id}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "create a new solution for a student task",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "solutions"
+                ],
+                "summary": "Create a solution",
+                "operationId": "create-solution",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Student Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Solution details",
+                        "name": "solutionText",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/DTO.SolutionDTO"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Solution created successfully with solution ID returned",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request due to invalid input",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error or fail to get solution context",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/solutions/update-cheating-rate/{id}": {
             "put": {
                 "security": [
@@ -918,6 +978,14 @@ const docTemplate = `{
             "properties": {
                 "cheatingRate": {
                     "type": "number"
+                }
+            }
+        },
+        "DTO.SolutionDTO": {
+            "type": "object",
+            "properties": {
+                "solution": {
+                    "type": "string"
                 }
             }
         },

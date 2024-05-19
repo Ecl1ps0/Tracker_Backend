@@ -5,6 +5,11 @@ definitions:
       cheatingRate:
         type: number
     type: object
+  DTO.SolutionDTO:
+    properties:
+      solution:
+        type: string
+    type: object
   DTO.SolutionFinalGradeDTO:
     properties:
       finalGrade:
@@ -292,6 +297,45 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get all solutions
+      tags:
+      - solutions
+  /api/solutions/on-student-task/{id}:
+    post:
+      consumes:
+      - application/json
+      description: create a new solution for a student task
+      operationId: create-solution
+      parameters:
+      - description: Student Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Solution details
+        in: body
+        name: solutionText
+        required: true
+        schema:
+          $ref: '#/definitions/DTO.SolutionDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Solution created successfully with solution ID returned
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad request due to invalid input
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal server error or fail to get solution context
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Create a solution
       tags:
       - solutions
   /api/solutions/update-cheating-rate/{id}:
