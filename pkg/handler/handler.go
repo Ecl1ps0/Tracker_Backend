@@ -57,8 +57,9 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	{
 		users := api.Group("/users")
 		{
-			users.GET("/", h.getAllUsers)
+			users.GET("", h.getAllUsers)
 			users.GET("/profile", h.getProfile)
+			users.GET("/teacher/:id/students", h.GetStudentByTeacherID)
 			users.POST("/:studentID/add-to-task/:taskID", h.addStudentToTask)
 		}
 
