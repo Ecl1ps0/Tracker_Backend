@@ -25,6 +25,7 @@ type Role interface {
 type User interface {
 	GetAllUsers() ([]DTO.UserDTO, error)
 	GetProfile(userId uint) (DTO.UserDTO, error)
+	GetStudentsByTeacherID(id uint) ([]models.User, error)
 	AddStudentToTask(studentId, taskId uint) error
 	GetRoleByUserID(id uint) (uint, error)
 	UserToDTO(user models.User) DTO.UserDTO
