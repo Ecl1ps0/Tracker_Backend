@@ -751,6 +751,40 @@ paths:
       summary: Get user
       tags:
       - users
+  /api/users/teacher/{id}/students:
+    get:
+      consumes:
+      - application/json
+      description: retrieve all students associated with a specific teacher
+      operationId: get-students-by-teacher-id
+      parameters:
+      - description: Teacher ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of students taught by the teacher
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+        "400":
+          description: Invalid teacher ID
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get students by teacher ID
+      tags:
+      - users
   /auth/signin:
     post:
       consumes:
