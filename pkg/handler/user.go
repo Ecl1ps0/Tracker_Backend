@@ -30,8 +30,8 @@ func (h *Handler) getAllUsers(c *gin.Context) {
 		return
 	}
 
-	if roleId != 3 {
-		newErrorResponse(c, http.StatusForbidden, "Only admins can observe all users!")
+	if roleId != 3 && roleId != 2 {
+		newErrorResponse(c, http.StatusForbidden, "Only admins and teachers can observe all users!")
 		return
 	}
 
@@ -69,6 +69,34 @@ func (h *Handler) getProfile(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, user)
+}
+
+// @Summary Get students by teacher ID
+// @Security ApiKeyAuth
+// @Tags users
+// @Description retrieve all students associated with a specific teacher
+// @ID get-students-by-teacher-id
+// @Param id path int true "Teacher ID"
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} models.User "List of students taught by the teacher"
+// @Failure 400 {object} Error "Invalid teacher ID"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/users/teacher/{id}/students [get]
+func (h *Handler) GetStudentByTeacherID(c *gin.Context) {
+	teacherId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	students, err := h.service.User.GetStudentsByTeacherID(uint(teacherId))
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, students)
 }
 
 // @Summary Add student to task

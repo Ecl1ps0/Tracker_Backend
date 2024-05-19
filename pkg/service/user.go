@@ -37,6 +37,10 @@ func (s *UserService) GetProfile(userId uint) (DTO.UserDTO, error) {
 	return s.UserToDTO(user), nil
 }
 
+func (s *UserService) GetStudentsByTeacherID(id uint) ([]models.User, error) {
+	return s.repo.GetStudentsByTeacherID(id)
+}
+
 func (s *UserService) AddStudentToTask(studentId, taskId uint) error {
 	return s.repo.AddStudentToTask(models.StudentTask{
 		StudentID: studentId,
