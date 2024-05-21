@@ -32,6 +32,15 @@ func (r *UserPostgres) GetProfile(id uint) (models.User, error) {
 	return user, nil
 }
 
+func (r *UserPostgres) GetAllStudents() ([]models.User, error) {
+	var students []models.User
+	if result := r.db.Where("role_id = ?", 1).Find(&students); result.Error != nil {
+		return nil, result.Error
+	}
+
+	return students, nil
+}
+
 func (r *UserPostgres) GetStudentsByTeacherID(id uint) ([]models.User, error) {
 	var students []models.User
 	if result := r.db.Table("student_tasks").

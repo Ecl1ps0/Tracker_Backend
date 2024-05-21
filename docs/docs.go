@@ -793,7 +793,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.User"
+                                "$ref": "#/definitions/DTO.UserDTO"
                             }
                         }
                     },
@@ -835,11 +835,55 @@ const docTemplate = `{
                     "200": {
                         "description": "The profile of the user",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/DTO.UserDTO"
                         }
                     },
                     "400": {
                         "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/students": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "retrieve a list of all students, accessible only by teachers and admins",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get all students",
+                "operationId": "get-all-students",
+                "responses": {
+                    "200": {
+                        "description": "List of all students",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/DTO.UserDTO"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Access denied",
                         "schema": {
                             "$ref": "#/definitions/handler.Error"
                         }
@@ -887,7 +931,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.User"
+                                "$ref": "#/definitions/DTO.UserDTO"
                             }
                         }
                     },

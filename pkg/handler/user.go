@@ -13,7 +13,7 @@ import (
 // @ID get-all-users
 // @Accept  json
 // @Produce  json
-// @Success 200 {array} models.User "List of all users"
+// @Success 200 {array} DTO.UserDTO "List of all users"
 // @Failure 403 {object} Error "Access denied"
 // @Failure 500 {object} Error "Internal server error"
 // @Router /api/users [get]
@@ -51,7 +51,7 @@ func (h *Handler) getAllUsers(c *gin.Context) {
 // @ID get-user
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} models.User "The profile of the user"
+// @Success 200 {object} DTO.UserDTO "The profile of the user"
 // @Failure 400 {object} Error "Bad request"
 // @Failure 500 {object} Error "Internal server error"
 // @Router /api/users/profile [get]
@@ -71,6 +71,44 @@ func (h *Handler) getProfile(c *gin.Context) {
 	c.JSON(http.StatusOK, user)
 }
 
+// @Summary Get all students
+// @Security ApiKeyAuth
+// @Tags users
+// @Description retrieve a list of all students, accessible only by teachers and admins
+// @ID get-all-students
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} DTO.UserDTO "List of all students"
+// @Failure 403 {object} Error "Access denied"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/users/students [get]
+func (h *Handler) getAllStudents(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	roleId, err := h.service.User.GetRoleByUserID(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if roleId != 2 && roleId != 3 {
+		newErrorResponse(c, http.StatusForbidden, "Only teachers and admins can see list of all students!")
+		return
+	}
+
+	students, err := h.service.User.GetAllStudents()
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, students)
+}
+
 // @Summary Get students by teacher ID
 // @Security ApiKeyAuth
 // @Tags users
@@ -79,7 +117,7 @@ func (h *Handler) getProfile(c *gin.Context) {
 // @Param id path int true "Teacher ID"
 // @Accept  json
 // @Produce  json
-// @Success 200 {array} models.User "List of students taught by the teacher"
+// @Success 200 {array} DTO.UserDTO "List of students taught by the teacher"
 // @Failure 400 {object} Error "Invalid teacher ID"
 // @Failure 500 {object} Error "Internal server error"
 // @Router /api/users/teacher/{id}/students [get]

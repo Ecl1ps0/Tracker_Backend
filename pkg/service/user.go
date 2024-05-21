@@ -20,10 +20,7 @@ func (s *UserService) GetAllUsers() ([]DTO.UserDTO, error) {
 		return nil, err
 	}
 
-	var userDTOs []DTO.UserDTO
-	for _, user := range users {
-		userDTOs = append(userDTOs, s.UserToDTO(user))
-	}
+	userDTOs := s.ParseUsersToDTOs(users)
 
 	return userDTOs, nil
 }
@@ -37,8 +34,26 @@ func (s *UserService) GetProfile(userId uint) (DTO.UserDTO, error) {
 	return s.UserToDTO(user), nil
 }
 
-func (s *UserService) GetStudentsByTeacherID(id uint) ([]models.User, error) {
-	return s.repo.GetStudentsByTeacherID(id)
+func (s *UserService) GetAllStudents() ([]DTO.UserDTO, error) {
+	students, err := s.repo.GetAllStudents()
+	if err != nil {
+		return nil, err
+	}
+
+	studentsDTOs := s.ParseUsersToDTOs(students)
+
+	return studentsDTOs, nil
+}
+
+func (s *UserService) GetStudentsByTeacherID(id uint) ([]DTO.UserDTO, error) {
+	students, err := s.repo.GetStudentsByTeacherID(id)
+	if err != nil {
+		return nil, err
+	}
+
+	studentsDTOs := s.ParseUsersToDTOs(students)
+
+	return studentsDTOs, nil
 }
 
 func (s *UserService) AddStudentToTask(studentId, taskId uint) error {
@@ -60,4 +75,13 @@ func (s *UserService) UserToDTO(user models.User) DTO.UserDTO {
 		Email:   user.Email,
 		RoleID:  user.RoleID,
 	}
+}
+
+func (s *UserService) ParseUsersToDTOs(users []models.User) []DTO.UserDTO {
+	var userDTOs []DTO.UserDTO
+	for _, user := range users {
+		userDTOs = append(userDTOs, s.UserToDTO(user))
+	}
+
+	return userDTOs
 }
