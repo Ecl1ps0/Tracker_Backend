@@ -135,6 +135,18 @@ func (h *Handler) getAllSolutions(c *gin.Context) {
 	c.JSON(http.StatusOK, solutions)
 }
 
+// @Summary Get student solution on task
+// @Security ApiKeyAuth
+// @Tags solutions
+// @Description Get a specific student solution on a given task by student task ID
+// @ID get-student-solution-on-task
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Student Task ID"
+// @Success 200 {object} models.StudentSolution "Student solution for the specified task"
+// @Failure 400 {object} Error "Bad request"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /get-solution-on-student-task/{id} [get]
 func (h *Handler) getStudentSolutionOnTask(c *gin.Context) {
 	studentTaskId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {

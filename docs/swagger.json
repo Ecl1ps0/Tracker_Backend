@@ -1061,6 +1061,56 @@
                     }
                 }
             }
+        },
+        "/get-solution-on-student-task/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Get a specific student solution on a given task by student task ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "solutions"
+                ],
+                "summary": "Get student solution on task",
+                "operationId": "get-student-solution-on-task",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Student Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Student solution for the specified task",
+                        "schema": {
+                            "$ref": "#/definitions/models.StudentSolution"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {

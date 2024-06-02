@@ -892,6 +892,39 @@ paths:
       summary: SignUp
       tags:
       - auth
+  /get-solution-on-student-task/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get a specific student solution on a given task by student task
+        ID
+      operationId: get-student-solution-on-task
+      parameters:
+      - description: Student Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Student solution for the specified task
+          schema:
+            $ref: '#/definitions/models.StudentSolution'
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get student solution on task
+      tags:
+      - solutions
 securityDefinitions:
   ApiKeyAuth:
     in: header
