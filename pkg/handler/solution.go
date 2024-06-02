@@ -135,6 +135,22 @@ func (h *Handler) getAllSolutions(c *gin.Context) {
 	c.JSON(http.StatusOK, solutions)
 }
 
+func (h *Handler) getStudentSolutionOnTask(c *gin.Context) {
+	studentTaskId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	solution, err := h.service.Solution.GetStudentSolutionOnTask(uint(studentTaskId))
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, solution)
+}
+
 // @Summary Create a solution
 // @Security ApiKeyAuth
 // @Tags solutions
@@ -151,7 +167,7 @@ func (h *Handler) getAllSolutions(c *gin.Context) {
 func (h *Handler) createSolution(c *gin.Context) {
 	studentTaskId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
