@@ -43,6 +43,7 @@ type Task interface {
 type Solution interface {
 	GetAllSolutions() ([]models.StudentSolution, error)
 	CreateSolution(solution models.StudentSolution) (uint, error)
+	GetStudentSolutionOnTask(studentSolutionId uint) (models.StudentSolution, error)
 	UpdateCheatingRate(id uint, rate decimal.Decimal) error
 	UpdateFinalGrade(id uint, grade decimal.Decimal) error
 	GetTeacherBySolutionID(id uint) (uint, error)
