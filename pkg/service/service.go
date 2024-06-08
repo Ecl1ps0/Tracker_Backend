@@ -46,12 +46,14 @@ type Task interface {
 
 type Solution interface {
 	GetAllSolutions() ([]models.StudentSolution, error)
+	GetSolutionByID(id uint) (models.StudentSolution, error)
 	GetUserSolutionsOnSolvedTask(id uint) ([]models.StudentSolution, error)
 	GetStudentSolutionOnTask(studentSolutionId uint) (models.StudentSolution, error)
 	CreateSolution(solution models.StudentSolution) (uint, error)
-	UpdateCheatingRate(id uint, dto DTO.SolutionCheatingRateDTO) error
+	UpdateCheatingRate(id uint, rate decimal.Decimal) error
 	UpdateFinalGrade(id uint, grade decimal.Decimal) error
 	GetTeacherBySolutionID(id uint) (uint, error)
+	GenerateCheatingRate(solution string) (decimal.Decimal, error)
 }
 
 type Service struct {

@@ -270,8 +270,8 @@ func (h *Handler) createSolution(c *gin.Context) {
 // @Failure 400 {object} Error "Invalid parameter or bad request"
 // @Failure 403 {object} Error "Access denied"
 // @Failure 500 {object} Error "Internal server error"
-// @Router /api/solutions/update-cheating-rate/{id} [put]
-func (h *Handler) updateSolutionCheatingRate(c *gin.Context) {
+// @Router /api/solutions/generate-cheating-rate/{id} [put]
+func (h *Handler) generateSolutionCheatingRate(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
@@ -284,14 +284,8 @@ func (h *Handler) updateSolutionCheatingRate(c *gin.Context) {
 		return
 	}
 
-	if roleId != 3 {
-		newErrorResponse(c, http.StatusForbidden, "Only admin can update solution!")
-		return
-	}
-
-	var cheatingRate DTO.SolutionCheatingRateDTO
-	if err := c.BindJSON(&cheatingRate); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
+	if roleId != 2 && roleId != 3 {
+		newErrorResponse(c, http.StatusForbidden, "Only admin can generate solution!")
 		return
 	}
 
@@ -301,12 +295,31 @@ func (h *Handler) updateSolutionCheatingRate(c *gin.Context) {
 		return
 	}
 
-	if err := h.service.Solution.UpdateCheatingRate(uint(solutionId), cheatingRate); err != nil {
+	solution, err := h.service.Solution.GetSolutionByID(uint(solutionId))
+	if err != nil {
 		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	c.Status(http.StatusOK)
+	solutionMarshaled, err := json.Marshal(solution)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	// info := "[{\"total_time\": 6894752,\"compiled_successfully\": 1116,\"add_lines\": 12365,\"cps\": 0.003435512,\"paste_lines\": 5202,\"max_pastes\": 120,\"avg_paste\": 4.553440984}]"
+	rate, err := h.service.Solution.GenerateCheatingRate(string(solutionMarshaled))
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if err := h.service.Solution.UpdateCheatingRate(uint(solutionId), rate); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"CheatingRate:": rate})
 }
 
 // @Summary Update the final grade of a solution
