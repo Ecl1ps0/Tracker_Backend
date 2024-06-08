@@ -23,6 +23,15 @@ func (r *SolutionPostgres) GetAllSolutions() ([]models.StudentSolution, error) {
 	return solutions, nil
 }
 
+func (r *SolutionPostgres) GetSolutionByID(id uint) (models.StudentSolution, error) {
+	var solution models.StudentSolution
+	if result := r.db.Preload("Report").Where("id = ?", id).Find(&solution); result.Error != nil {
+		return models.StudentSolution{}, result.Error
+	}
+
+	return solution, nil
+}
+
 func (r *SolutionPostgres) GetUserSolutionsOnSolvedTask(id uint) ([]models.StudentSolution, error) {
 	var users []models.StudentSolution
 	if results := r.db.Table("student_solutions").
