@@ -260,13 +260,13 @@ func (h *Handler) createSolution(c *gin.Context) {
 // @Summary Update the cheating rate of a solution
 // @Security ApiKeyAuth
 // @Tags solutions
-// @Description update the cheating rate for a specific solution, accessible only by admins
+// @Description update the cheating rate for a specific solution, accessible only by admins and teachers
 // @ID update-solution-cheating-rate
 // @Param id path int true "Solution ID"
 // @Param cheatingRate body DTO.SolutionCheatingRateDTO true "Cheating rate data"
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} nil "Cheating rate updated successfully"
+// @Success 200 {object} nil "Cheating rate generated and updated successfully"
 // @Failure 400 {object} Error "Invalid parameter or bad request"
 // @Failure 403 {object} Error "Access denied"
 // @Failure 500 {object} Error "Internal server error"
