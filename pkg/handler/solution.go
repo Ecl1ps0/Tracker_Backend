@@ -135,6 +135,52 @@ func (h *Handler) getAllSolutions(c *gin.Context) {
 	c.JSON(http.StatusOK, solutions)
 }
 
+// @Summary Get student solutions on solved task
+// @Security ApiKeyAuth
+// @Tags solutions
+// @Description retrieve solutions submitted by students on a solved task, accessible only by teachers and admins
+// @ID get-student-solutions-on-solved-task
+// @Param id path int true "Task ID"
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} models.StudentSolution "List of solutions submitted by students on the solved task"
+// @Failure 400 {object} Error "Invalid task ID"
+// @Failure 403 {object} Error "Access denied"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/solutions/solved-task/{id} [get]
+func (h *Handler) getStudentSolutionsOnTask(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	roleId, err := h.service.User.GetRoleByUserID(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if roleId != 2 && roleId != 3 {
+		newErrorResponse(c, http.StatusForbidden, "Only teachers and admins can see list of students!")
+		return
+	}
+
+	taskId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	solutions, err := h.service.Solution.GetUserSolutionsOnSolvedTask(uint(taskId))
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, solutions)
+}
+
 // @Summary Get student solution on task
 // @Security ApiKeyAuth
 // @Tags solutions

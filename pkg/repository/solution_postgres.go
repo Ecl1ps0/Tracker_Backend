@@ -23,6 +23,20 @@ func (r *SolutionPostgres) GetAllSolutions() ([]models.StudentSolution, error) {
 	return solutions, nil
 }
 
+func (r *SolutionPostgres) GetUserSolutionsOnSolvedTask(id uint) ([]models.StudentSolution, error) {
+	var users []models.StudentSolution
+	if results := r.db.Table("student_solutions").
+		Select("student_solutions.*").
+		Joins("join student_tasks on student_solutions.student_task_id = student_tasks.id").
+		Joins("join users on student_tasks.student_id = users.id").
+		Where("student_tasks.task_id = ?", id).
+		Scan(&users); results.Error != nil {
+		return nil, results.Error
+	}
+
+	return users, nil
+}
+
 func (r *SolutionPostgres) GetStudentSolutionOnTask(studentSolutionId uint) (models.StudentSolution, error) {
 	var solution models.StudentSolution
 	if result := r.db.Where("student_task_id = ?", studentSolutionId).Find(&solution); result.Error != nil {
