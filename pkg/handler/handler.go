@@ -60,7 +60,8 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			users.GET("", h.getAllUsers)
 			users.GET("/profile", h.getProfile)
 			users.GET("/students", h.getAllStudents)
-			users.GET("/teacher/:id/students", h.GetStudentByTeacherID)
+			users.GET("/on-solution/:id", h.getStudentBySolutionID)
+			users.GET("/teacher/:id/students", h.getStudentByTeacherID)
 			users.POST("/:studentID/add-to-task/:taskID", h.addStudentToTask)
 		}
 
@@ -78,6 +79,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		solutions := api.Group("/solutions")
 		{
 			solutions.GET("/", h.getAllSolutions)
+			solutions.GET("/solved-task/:id", h.getStudentSolutionsOnTask)
 			solutions.GET("/get-solution-on-student-task/:id", h.getStudentSolutionOnTask)
 			solutions.POST("/on-student-task/:id", h.createSolution)
 			solutions.PUT("/update-cheating-rate/:id", h.updateSolutionCheatingRate)
