@@ -299,6 +299,47 @@ paths:
       summary: Get all solutions
       tags:
       - solutions
+  /api/solutions/generate-cheating-rate/{id}:
+    put:
+      consumes:
+      - application/json
+      description: update the cheating rate for a specific solution, accessible only
+        by admins and teachers
+      operationId: update-solution-cheating-rate
+      parameters:
+      - description: Solution ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Cheating rate data
+        in: body
+        name: cheatingRate
+        required: true
+        schema:
+          $ref: '#/definitions/DTO.SolutionCheatingRateDTO'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Cheating rate generated and updated successfully
+        "400":
+          description: Invalid parameter or bad request
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "403":
+          description: Access denied
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Update the cheating rate of a solution
+      tags:
+      - solutions
   /api/solutions/on-student-task/{id}:
     post:
       consumes:
@@ -375,47 +416,6 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get student solutions on solved task
-      tags:
-      - solutions
-  /api/solutions/update-cheating-rate/{id}:
-    put:
-      consumes:
-      - application/json
-      description: update the cheating rate for a specific solution, accessible only
-        by admins
-      operationId: update-solution-cheating-rate
-      parameters:
-      - description: Solution ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Cheating rate data
-        in: body
-        name: cheatingRate
-        required: true
-        schema:
-          $ref: '#/definitions/DTO.SolutionCheatingRateDTO'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Cheating rate updated successfully
-        "400":
-          description: Invalid parameter or bad request
-          schema:
-            $ref: '#/definitions/handler.Error'
-        "403":
-          description: Access denied
-          schema:
-            $ref: '#/definitions/handler.Error'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/handler.Error'
-      security:
-      - ApiKeyAuth: []
-      summary: Update the cheating rate of a solution
       tags:
       - solutions
   /api/solutions/update-final-grade/{id}:
