@@ -82,7 +82,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			solutions.GET("/solved-task/:id", h.getStudentSolutionsOnTask)
 			solutions.GET("/get-solution-on-student-task/:id", h.getStudentSolutionOnTask)
 			solutions.POST("/on-student-task/:id", h.createSolution)
-			solutions.PUT("/update-cheating-rate/:id", h.updateSolutionCheatingRate)
+			solutions.PUT("/generate-cheating-rate/:id", h.generateSolutionCheatingRate)
 			solutions.PUT("/update-final-grade/:id", h.updateSolutionFinalGrade)
 		}
 
