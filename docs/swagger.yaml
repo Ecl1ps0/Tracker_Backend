@@ -338,6 +338,45 @@ paths:
       summary: Create a solution
       tags:
       - solutions
+  /api/solutions/solved-task/{id}:
+    get:
+      consumes:
+      - application/json
+      description: retrieve solutions submitted by students on a solved task, accessible
+        only by teachers and admins
+      operationId: get-student-solutions-on-solved-task
+      parameters:
+      - description: Task ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of solutions submitted by students on the solved task
+          schema:
+            items:
+              $ref: '#/definitions/models.StudentSolution'
+            type: array
+        "400":
+          description: Invalid task ID
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "403":
+          description: Access denied
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get student solutions on solved task
+      tags:
+      - solutions
   /api/solutions/update-cheating-rate/{id}:
     put:
       consumes:
@@ -723,6 +762,43 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get all users
+      tags:
+      - users
+  /api/users/on-solution/{id}:
+    get:
+      consumes:
+      - application/json
+      description: retrieve the student associated with a specific solution, accessible
+        only by teachers and admins
+      operationId: get-student-by-solution-id
+      parameters:
+      - description: Solution ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Student associated with the solution
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Invalid solution ID
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "403":
+          description: Access denied
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get student by solution ID
       tags:
       - users
   /api/users/profile:

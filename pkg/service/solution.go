@@ -19,6 +19,10 @@ func (r *SolutionService) GetAllSolutions() ([]models.StudentSolution, error) {
 	return r.repo.GetAllSolutions()
 }
 
+func (r *SolutionService) GetUserSolutionsOnSolvedTask(id uint) ([]models.StudentSolution, error) {
+	return r.repo.GetUserSolutionsOnSolvedTask(id)
+}
+
 func (r *SolutionService) GetStudentSolutionOnTask(studentSolutionId uint) (models.StudentSolution, error) {
 	return r.repo.GetStudentSolutionOnTask(studentSolutionId)
 }

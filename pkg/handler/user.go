@@ -121,7 +121,7 @@ func (h *Handler) getAllStudents(c *gin.Context) {
 // @Failure 400 {object} Error "Invalid teacher ID"
 // @Failure 500 {object} Error "Internal server error"
 // @Router /api/users/teacher/{id}/students [get]
-func (h *Handler) GetStudentByTeacherID(c *gin.Context) {
+func (h *Handler) getStudentByTeacherID(c *gin.Context) {
 	teacherId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -135,6 +135,52 @@ func (h *Handler) GetStudentByTeacherID(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, students)
+}
+
+// @Summary Get student by solution ID
+// @Security ApiKeyAuth
+// @Tags users
+// @Description retrieve the student associated with a specific solution, accessible only by teachers and admins
+// @ID get-student-by-solution-id
+// @Param id path int true "Solution ID"
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} models.User "Student associated with the solution"
+// @Failure 400 {object} Error "Invalid solution ID"
+// @Failure 403 {object} Error "Access denied"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/users/on-solution/{id} [get]
+func (h *Handler) getStudentBySolutionID(c *gin.Context) {
+	userId, err := getUserId(c)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	roleId, err := h.service.User.GetRoleByUserID(userId)
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	if roleId != 2 && roleId != 3 {
+		newErrorResponse(c, http.StatusForbidden, "Only teachers and admins can get student by solution!")
+		return
+	}
+
+	solutionId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	student, err := h.service.User.GetStudentBySolutionID(uint(solutionId))
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, student)
 }
 
 // @Summary Add student to task

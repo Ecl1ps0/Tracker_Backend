@@ -45,6 +45,15 @@ func (s *UserService) GetAllStudents() ([]DTO.UserDTO, error) {
 	return studentsDTOs, nil
 }
 
+func (s *UserService) GetStudentBySolutionID(id uint) (DTO.UserDTO, error) {
+	student, err := s.repo.GetStudentBySolutionID(id)
+	if err != nil {
+		return DTO.UserDTO{}, err
+	}
+
+	return s.UserToDTO(student), nil
+}
+
 func (s *UserService) GetStudentsByTeacherID(id uint) ([]DTO.UserDTO, error) {
 	students, err := s.repo.GetStudentsByTeacherID(id)
 	if err != nil {

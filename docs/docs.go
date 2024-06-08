@@ -216,6 +216,65 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/solutions/solved-task/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "retrieve solutions submitted by students on a solved task, accessible only by teachers and admins",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "solutions"
+                ],
+                "summary": "Get student solutions on solved task",
+                "operationId": "get-student-solutions-on-solved-task",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Task ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of solutions submitted by students on the solved task",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.StudentSolution"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid task ID",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Access denied",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    }
+                }
+            }
+        },
         "/api/solutions/update-cheating-rate/{id}": {
             "put": {
                 "security": [
@@ -795,6 +854,62 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/DTO.UserDTO"
                             }
+                        }
+                    },
+                    "403": {
+                        "description": "Access denied",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/on-solution/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "retrieve the student associated with a specific solution, accessible only by teachers and admins",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get student by solution ID",
+                "operationId": "get-student-by-solution-id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Solution ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Student associated with the solution",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid solution ID",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
                         }
                     },
                     "403": {
