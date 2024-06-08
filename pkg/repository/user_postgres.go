@@ -41,6 +41,19 @@ func (r *UserPostgres) GetAllStudents() ([]models.User, error) {
 	return students, nil
 }
 
+func (r *UserPostgres) GetStudentBySolutionID(id uint) (models.User, error) {
+	var student models.User
+	if result := r.db.Table("student_solutions").
+		Select("users.*").
+		Joins("join student_tasks on student_solutions.student_task_id = student_tasks.id").
+		Joins("join users on student_tasks.student_id = users.id").
+		Where("student_solutions.id = ?", id).Scan(&student); result.Error != nil {
+		return models.User{}, result.Error
+	}
+
+	return student, nil
+}
+
 func (r *UserPostgres) GetStudentsByTeacherID(id uint) ([]models.User, error) {
 	var students []models.User
 	if result := r.db.Table("student_tasks").
