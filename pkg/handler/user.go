@@ -197,7 +197,7 @@ func (h *Handler) getStudentBySolutionID(c *gin.Context) {
 // @Failure 403 {object} Error "Access denied"
 // @Failure 404 {object} Error "Task or user not found"
 // @Failure 500 {object} Error "Internal server error"
-// @Router /api/tasks/{taskID}/students/{studentID} [post]
+// @Router /api/users/{studentId}/add-to-task/{taskId} [post]
 func (h *Handler) addStudentToTask(c *gin.Context) {
 	userId, err := getUserId(c)
 	if err != nil {

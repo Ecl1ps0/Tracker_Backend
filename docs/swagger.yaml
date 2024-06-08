@@ -515,49 +515,6 @@ paths:
       summary: Get a task by ID
       tags:
       - tasks
-  /api/tasks/{taskID}/students/{studentID}:
-    post:
-      consumes:
-      - application/json
-      description: add student to task
-      operationId: add-student-to-task
-      parameters:
-      - description: Task ID
-        in: path
-        name: taskID
-        required: true
-        type: integer
-      - description: Student ID
-        in: path
-        name: studentID
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Successfully added student to task
-        "400":
-          description: Invalid input data
-          schema:
-            $ref: '#/definitions/handler.Error'
-        "403":
-          description: Access denied
-          schema:
-            $ref: '#/definitions/handler.Error'
-        "404":
-          description: Task or user not found
-          schema:
-            $ref: '#/definitions/handler.Error'
-        "500":
-          description: Internal server error
-          schema:
-            $ref: '#/definitions/handler.Error'
-      security:
-      - ApiKeyAuth: []
-      summary: Add student to task
-      tags:
-      - users
   /api/tasks/create:
     post:
       consumes:
@@ -762,6 +719,49 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: Get all users
+      tags:
+      - users
+  /api/users/{studentId}/add-to-task/{taskId}:
+    post:
+      consumes:
+      - application/json
+      description: add student to task
+      operationId: add-student-to-task
+      parameters:
+      - description: Task ID
+        in: path
+        name: taskID
+        required: true
+        type: integer
+      - description: Student ID
+        in: path
+        name: studentID
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully added student to task
+        "400":
+          description: Invalid input data
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "403":
+          description: Access denied
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "404":
+          description: Task or user not found
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Add student to task
       tags:
       - users
   /api/users/on-solution/{id}:

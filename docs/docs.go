@@ -761,72 +761,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/tasks/{taskID}/students/{studentID}": {
-            "post": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "add student to task",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Add student to task",
-                "operationId": "add-student-to-task",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Task ID",
-                        "name": "taskID",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Student ID",
-                        "name": "studentID",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Successfully added student to task"
-                    },
-                    "400": {
-                        "description": "Invalid input data",
-                        "schema": {
-                            "$ref": "#/definitions/handler.Error"
-                        }
-                    },
-                    "403": {
-                        "description": "Access denied",
-                        "schema": {
-                            "$ref": "#/definitions/handler.Error"
-                        }
-                    },
-                    "404": {
-                        "description": "Task or user not found",
-                        "schema": {
-                            "$ref": "#/definitions/handler.Error"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal server error",
-                        "schema": {
-                            "$ref": "#/definitions/handler.Error"
-                        }
-                    }
-                }
-            }
-        },
         "/api/users": {
             "get": {
                 "security": [
@@ -1052,6 +986,72 @@ const docTemplate = `{
                     },
                     "400": {
                         "description": "Invalid teacher ID",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/users/{studentId}/add-to-task/{taskId}": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "add student to task",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Add student to task",
+                "operationId": "add-student-to-task",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Task ID",
+                        "name": "taskID",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Student ID",
+                        "name": "studentID",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully added student to task"
+                    },
+                    "400": {
+                        "description": "Invalid input data",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    },
+                    "403": {
+                        "description": "Access denied",
+                        "schema": {
+                            "$ref": "#/definitions/handler.Error"
+                        }
+                    },
+                    "404": {
+                        "description": "Task or user not found",
                         "schema": {
                             "$ref": "#/definitions/handler.Error"
                         }
