@@ -26,6 +26,7 @@ type User interface {
 	GetAllUsers() ([]DTO.UserDTO, error)
 	GetProfile(userId uint) (DTO.UserDTO, error)
 	GetAllStudents() ([]DTO.UserDTO, error)
+	GetStudentBySolutionID(id uint) (DTO.UserDTO, error)
 	GetStudentsByTeacherID(id uint) ([]DTO.UserDTO, error)
 	AddStudentToTask(studentId, taskId uint) error
 	GetRoleByUserID(id uint) (uint, error)
@@ -45,6 +46,7 @@ type Task interface {
 
 type Solution interface {
 	GetAllSolutions() ([]models.StudentSolution, error)
+	GetUserSolutionsOnSolvedTask(id uint) ([]models.StudentSolution, error)
 	GetStudentSolutionOnTask(studentSolutionId uint) (models.StudentSolution, error)
 	CreateSolution(solution models.StudentSolution) (uint, error)
 	UpdateCheatingRate(id uint, dto DTO.SolutionCheatingRateDTO) error
