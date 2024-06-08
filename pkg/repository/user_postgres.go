@@ -70,7 +70,7 @@ func (r *UserPostgres) GetStudentsByTeacherID(id uint) ([]models.User, error) {
 
 func (r *UserPostgres) AddStudentToTask(studentTask models.StudentTask) error {
 	var existStudentTask models.StudentTask
-	if err := r.db.Table("student_task").Where("task_id = ? and student_id = ?", studentTask.TaskID, studentTask.StudentID).First(&existStudentTask).Error; err != nil {
+	if err := r.db.Table("student_tasks").Where("task_id = ? and student_id = ?", studentTask.TaskID, studentTask.StudentID).First(&existStudentTask).Error; err == nil {
 		return errors.New("duplicate entry")
 	}
 
