@@ -299,6 +299,40 @@ paths:
       summary: Get all solutions
       tags:
       - solutions
+  /api/solutions/by-student/{id}:
+    get:
+      consumes:
+      - application/json
+      description: retrieve solutions submitted by a specific student
+      operationId: get-solutions-by-student-id
+      parameters:
+      - description: Student ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of solutions submitted by the student
+          schema:
+            items:
+              $ref: '#/definitions/models.StudentSolution'
+            type: array
+        "400":
+          description: Invalid student ID
+          schema:
+            $ref: '#/definitions/handler.Error'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/handler.Error'
+      security:
+      - ApiKeyAuth: []
+      summary: Get solutions by student ID
+      tags:
+      - solutions
   /api/solutions/generate-cheating-rate/{id}:
     put:
       consumes:
