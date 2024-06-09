@@ -43,6 +43,7 @@ type Task interface {
 
 type Solution interface {
 	GetAllSolutions() ([]models.StudentSolution, error)
+	GetSolutionsByStudentID(id uint) ([]models.StudentSolution, error)
 	GetSolutionByID(id uint) (models.StudentSolution, error)
 	CreateSolution(solution models.StudentSolution) (uint, error)
 	GetUserSolutionsOnSolvedTask(id uint) ([]models.StudentSolution, error)

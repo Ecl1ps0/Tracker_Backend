@@ -22,6 +22,10 @@ func (r *SolutionService) GetAllSolutions() ([]models.StudentSolution, error) {
 	return r.repo.GetAllSolutions()
 }
 
+func (r *SolutionService) GetSolutionsByStudentID(id uint) ([]models.StudentSolution, error) {
+	return r.repo.GetSolutionsByStudentID(id)
+}
+
 func (r *SolutionService) GetSolutionByID(id uint) (models.StudentSolution, error) {
 	return r.repo.GetSolutionByID(id)
 }

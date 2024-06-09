@@ -79,6 +79,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		solutions := api.Group("/solutions")
 		{
 			solutions.GET("/", h.getAllSolutions)
+			solutions.GET("by-student/:id", h.getSolutionsByStudentID)
 			solutions.GET("/solved-task/:id", h.getStudentSolutionsOnTask)
 			solutions.GET("/get-solution-on-student-task/:id", h.getStudentSolutionOnTask)
 			solutions.POST("/on-student-task/:id", h.createSolution)
