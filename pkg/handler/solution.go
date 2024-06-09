@@ -135,6 +135,34 @@ func (h *Handler) getAllSolutions(c *gin.Context) {
 	c.JSON(http.StatusOK, solutions)
 }
 
+// @Summary Get solutions by student ID
+// @Security ApiKeyAuth
+// @Tags solutions
+// @Description retrieve solutions submitted by a specific student
+// @ID get-solutions-by-student-id
+// @Param id path int true "Student ID"
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} models.StudentSolution "List of solutions submitted by the student"
+// @Failure 400 {object} Error "Invalid student ID"
+// @Failure 500 {object} Error "Internal server error"
+// @Router /api/solutions/by-student/{id} [get]
+func (h *Handler) getSolutionsByStudentID(c *gin.Context) {
+	studentId, err := strconv.Atoi(c.Param("id"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	solutions, err := h.service.Solution.GetSolutionsByStudentID(uint(studentId))
+	if err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, solutions)
+}
+
 // @Summary Get student solutions on solved task
 // @Security ApiKeyAuth
 // @Tags solutions
