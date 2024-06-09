@@ -25,9 +25,14 @@ services:
       POSTGRES_DB: proctor
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: strongpass
+    volumes:
+      - proctor_db_data:/var/lib/postgresql/data
     networks:
       - proctor-system
 
 networks:
   proctor-system:
     driver: bridge
+
+volumes:
+  proctor_db_data:
