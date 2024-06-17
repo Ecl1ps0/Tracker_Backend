@@ -8,4 +8,8 @@ db:
   port: "5432"
   sslmode: "disable"
 
+redis:
+  host: "proctor_redis"
+  port: "6379"
+
 info: "[{\"total_time\": 6894752,\"compiled_successfully\": 1116,\"add_lines\": 12365,\"cps\": 0.003435512,\"paste_lines\": 5202,\"max_pastes\": 120,\"avg_paste\": 4.553440984}]"
