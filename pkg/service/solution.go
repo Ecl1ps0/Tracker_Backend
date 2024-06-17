@@ -55,12 +55,7 @@ func (r *SolutionService) GetTeacherBySolutionID(id uint) (uint, error) {
 }
 
 func (r *SolutionService) GenerateCheatingRate(solution string) (decimal.Decimal, error) {
-	pwd, err := os.Getwd()
-	if err != nil {
-		return decimal.NewFromFloat(-1), err
-	}
-
-	cmd := exec.Command("C:/Program Files/Git/bin/bash.exe", pwd+"/run_model.sh", viper.GetString("info"))
+	cmd := exec.Command("./run_model.sh", viper.GetString("info"))
 	cmd.Env = append(os.Environ(), "SOLUTION="+solution)
 
 	output, err := cmd.CombinedOutput()
