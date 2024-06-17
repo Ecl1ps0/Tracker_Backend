@@ -64,9 +64,10 @@ type Service struct {
 	User
 	Task
 	Solution
+	Redis *repository.RedisRepository
 }
 
-func NewService(repos *repository.Repository) *Service {
+func NewService(repos *repository.Repository, redis *repository.RedisRepository) *Service {
 	return &Service{
 		Authorization: NewAuthService(repos),
 		Report:        NewReportService(repos),
@@ -74,5 +75,6 @@ func NewService(repos *repository.Repository) *Service {
 		User:          NewUserService(repos),
 		Task:          NewTaskService(repos),
 		Solution:      NewSolutionService(repos),
+		Redis:         redis,
 	}
 }

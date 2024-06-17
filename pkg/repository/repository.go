@@ -2,6 +2,7 @@ package repository
 
 import (
 	"Proctor/models"
+	"github.com/redis/go-redis/v9"
 	"github.com/shopspring/decimal"
 	"gorm.io/gorm"
 )
@@ -60,9 +61,10 @@ type Repository struct {
 	User
 	Task
 	Solution
+	Redis *redis.Client
 }
 
-func NewRepository(db *gorm.DB) *Repository {
+func NewRepository(db *gorm.DB, client *redis.Client) *Repository {
 	return &Repository{
 		Authorization: NewAuthPostgres(db),
 		Report:        NewReportPostgres(db),
@@ -70,5 +72,6 @@ func NewRepository(db *gorm.DB) *Repository {
 		User:          NewUserPostgres(db),
 		Task:          NewTaskPostgres(db),
 		Solution:      NewSolutionPostgres(db),
+		Redis:         client,
 	}
 }
