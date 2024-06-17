@@ -42,14 +42,22 @@ func main() {
 		os.Getenv("DB_PASSWORD"),
 		viper.GetString("db.host"),
 		viper.GetString("db.port"),
-		viper.GetString("db.dbname")),
-	)
+		viper.GetString("db.dbname")))
 	if err != nil {
 		logrus.Fatalf("Fail to initialize database connection: %v", err)
 	}
 
-	repos := repository.NewRepository(db)
-	services := service.NewService(repos)
+	redis, err := repository.NewRedisDB(fmt.Sprintf("redis://%s:%s/0",
+		viper.GetString("redis.host"),
+		viper.GetString("redis.port")))
+	if err != nil {
+		logrus.Fatalf("Fail to initialize redis database connection: %v", err)
+	}
+
+	repos := repository.NewRepository(db, redis)
+	redisRepos := repository.NewRedisRepository(redis)
+
+	services := service.NewService(repos, redisRepos)
 	roles, err := services.Role.SetDefaultRoles()
 	if err != nil {
 		logrus.Fatalf("Fail to set default roles: %v", err)
