@@ -4,6 +4,7 @@ import (
 	"Proctor/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 type FileData struct {
@@ -91,15 +92,17 @@ func (h *Handler) createReport(c *gin.Context) {
 		return
 	}
 
-	solutionCtx, ok := Solutions.Load(files.StudentTaskID)
-	if !ok {
-		newErrorResponse(c, http.StatusInternalServerError, "Fuck")
+	var solution models.StudentSolution
+	if err = h.service.Redis.Get(c, strconv.Itoa(int(files.StudentTaskID)), &solution); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	solutionContext := solutionCtx.(models.StudentSolution)
-	solutionContext.ReportID = id
-	Solutions.Store(files.StudentTaskID, solutionContext)
+	solution.ReportID = id
+	if err = h.service.Redis.Set(c, strconv.Itoa(int(files.StudentTaskID)), solution, 0); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"dataId": id,

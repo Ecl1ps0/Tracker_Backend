@@ -9,7 +9,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"strconv"
-	"sync"
 	"time"
 )
 
@@ -19,7 +18,6 @@ type WebsocketMessage struct {
 }
 
 var upgrader = websocket.Upgrader{}
-var Solutions sync.Map
 
 func (h *Handler) webSocket(c *gin.Context) {
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
@@ -63,14 +61,9 @@ func (h *Handler) webSocket(c *gin.Context) {
 			solution.TimeStart = &startTime
 			solution.StudentTaskID = message.StudentTaskID
 
-			solutionCtx, loaded := Solutions.LoadOrStore(message.StudentTaskID, solution)
-			if loaded {
-				solutionContext := solutionCtx.(models.StudentSolution)
-
-				solutionContext.TimeStart = &startTime
-				solutionContext.StudentTaskID = message.StudentTaskID
-
-				Solutions.Store(message.StudentTaskID, solutionContext)
+			if err = h.service.Redis.Set(c, strconv.Itoa(int(message.StudentTaskID)), solution, 0); err != nil {
+				newErrorResponse(c, http.StatusInternalServerError, err.Error())
+				return
 			}
 
 			break
@@ -78,15 +71,18 @@ func (h *Handler) webSocket(c *gin.Context) {
 		case "finish":
 			finishTime = time.Now()
 
-			solutionCtx, ok := Solutions.Load(message.StudentTaskID)
-			if !ok {
-				newErrorResponse(c, http.StatusInternalServerError, "There is no such StudentTaskID in context!")
-				continue
+			var tempSolution models.StudentSolution
+			if err = h.service.Redis.Get(c, strconv.Itoa(int(message.StudentTaskID)), &tempSolution); err != nil {
+				newErrorResponse(c, http.StatusInternalServerError, err.Error())
+				return
 			}
 
-			solutionContext := solutionCtx.(models.StudentSolution)
-			solutionContext.TimeEnd = &finishTime
-			Solutions.Store(message.StudentTaskID, solutionContext)
+			tempSolution.TimeEnd = &finishTime
+			if err = h.service.Redis.Set(c, strconv.Itoa(int(message.StudentTaskID)), tempSolution, 0); err != nil {
+				newErrorResponse(c, http.StatusInternalServerError, err.Error())
+				return
+			}
+
 			break
 		}
 
@@ -251,11 +247,7 @@ func (h *Handler) getStudentSolutionOnTask(c *gin.Context) {
 // @Failure 500 {object} Error "Internal server error or fail to get solution context"
 // @Router /api/solutions/on-student-task/{id} [post]
 func (h *Handler) createSolution(c *gin.Context) {
-	studentTaskId, err := strconv.Atoi(c.Param("id"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
+	studentTaskId := c.Param("id")
 
 	var solutionText DTO.SolutionDTO
 	if err := c.BindJSON(&solutionText); err != nil {
@@ -263,14 +255,11 @@ func (h *Handler) createSolution(c *gin.Context) {
 		return
 	}
 
-	solutionContext, ok := Solutions.Load(uint(studentTaskId))
-	if !ok {
-		newErrorResponse(c, http.StatusInternalServerError, "Fail to get solution from context!")
+	var solution models.StudentSolution
+	if err := h.service.Redis.Get(c, studentTaskId, &solution); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
 		return
 	}
-
-	solution := solutionContext.(models.StudentSolution)
-	solution.Solution = solutionText.Solution
 
 	solutionId, err := h.service.Solution.CreateSolution(solution)
 	if err != nil {
@@ -278,7 +267,10 @@ func (h *Handler) createSolution(c *gin.Context) {
 		return
 	}
 
-	Solutions.Delete(strconv.Itoa(studentTaskId))
+	if err = h.service.Redis.Delete(c, studentTaskId); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"solutionId": solutionId,
