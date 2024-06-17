@@ -1,7 +1,5 @@
 #!/bin/bash
 
-source "./ml_model/venv/Scripts/activate"
-
 solution=$SOLUTION
 
 echo "$solution"
@@ -15,5 +13,3 @@ fi
 echo "Executing Python script..."
 python "./ml_model/main.py" "$1"
 echo "Python script finished with status: $?"
-
-deactivate
