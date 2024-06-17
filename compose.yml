@@ -12,6 +12,7 @@ services:
       DB_PASSWORD: strongpass
     depends_on:
       - db
+      - redis
     networks:
       - proctor-system
     restart: always
@@ -30,9 +31,20 @@ services:
     networks:
       - proctor-system
 
+  redis:
+    image: redis
+    container_name: proctor_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - proctor_redis_data:/var/lib/redis/data
+    networks:
+      - proctor-system
+
 networks:
   proctor-system:
     driver: bridge
 
 volumes:
   proctor_db_data:
+  proctor_redis_data:
