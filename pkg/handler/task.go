@@ -225,7 +225,7 @@ func (h *Handler) updateTask(c *gin.Context) {
 	}
 
 	if task.TeacherID != userId && roleId != 3 {
-		newErrorResponse(c, http.StatusForbidden, "Only Teacher created task and Admin can update task!")
+		newErrorResponse(c, http.StatusForbidden, "Only Teacher and Admin can update task!")
 		return
 	}
 
@@ -285,7 +285,7 @@ func (h *Handler) deleteTask(c *gin.Context) {
 	}
 
 	if task.TeacherID != userId && roleId != 3 {
-		newErrorResponse(c, http.StatusForbidden, "Only Teacher created task and Admin can delete task!")
+		newErrorResponse(c, http.StatusForbidden, "Only Teacher and Admin can delete task!")
 		return
 	}
 
