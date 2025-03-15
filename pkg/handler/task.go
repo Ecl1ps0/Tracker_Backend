@@ -8,6 +8,8 @@ import (
 	"strconv"
 )
 
+const INVALID_PARAMETER_ERROR_MSG = "Invalid parameter!"
+
 // @Summary Create a new task
 // @Security ApiKeyAuth
 // @Tags tasks
@@ -113,7 +115,7 @@ func (h *Handler) getAllTasks(c *gin.Context) {
 func (h *Handler) getTaskByID(c *gin.Context) {
 	taskId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "Invalid parameter!")
+		newErrorResponse(c, http.StatusBadRequest, INVALID_PARAMETER_ERROR_MSG)
 		return
 	}
 
@@ -212,7 +214,7 @@ func (h *Handler) updateTask(c *gin.Context) {
 
 	taskId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "Invalid parameter!")
+		newErrorResponse(c, http.StatusBadRequest, INVALID_PARAMETER_ERROR_MSG)
 		return
 	}
 
@@ -272,7 +274,7 @@ func (h *Handler) deleteTask(c *gin.Context) {
 
 	taskId, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "Invalid parameter!")
+		newErrorResponse(c, http.StatusBadRequest, INVALID_PARAMETER_ERROR_MSG)
 		return
 	}
 
