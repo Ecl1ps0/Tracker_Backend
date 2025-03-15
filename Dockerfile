@@ -1,4 +1,4 @@
-FROM golang:alpine as build
+FROM golang:alpine AS build
 
 WORKDIR /app
 
@@ -12,9 +12,16 @@ FROM python:slim
 
 WORKDIR /Proctor
 
+RUN groupadd -r proctor && useradd -r -g proctor proctor
+
+RUN mkdir -p /Proctor && chown -R proctor:proctor /Proctor
+
+USER proctor
+
 COPY --from=build /app .
 
-RUN apt-get update && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY ./ml_model/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt

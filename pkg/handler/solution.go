@@ -25,24 +25,12 @@ func (h *Handler) webSocket(c *gin.Context) {
 		newErrorResponse(c, http.StatusInternalServerError, "Fail to update connection!")
 		return
 	}
-	defer func(conn *websocket.Conn) {
-		err := conn.Close()
-		if err != nil {
-			newErrorResponse(c, http.StatusInternalServerError, "Fail to close websocket!")
-			return
-		}
-	}(conn)
-
-	var solution models.StudentSolution
-	var startTime, finishTime time.Time
+	defer closeWebSocket(conn, c)
 
 	for {
 		messageType, msg, err := conn.ReadMessage()
 		if err != nil {
-			if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
-				return
-			}
-			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			handleWebSocketError(c, err)
 			return
 		}
 
@@ -52,38 +40,11 @@ func (h *Handler) webSocket(c *gin.Context) {
 			return
 		}
 
-		logrus.Infof("Recived a message: %v", message.Message)
+		logrus.Infof("Received a message: %v", message.Message)
 
-		switch message.Message {
-		case "start":
-			startTime = time.Now()
-
-			solution.TimeStart = &startTime
-			solution.StudentTaskID = message.StudentTaskID
-
-			if err = h.service.Redis.Set(c, strconv.Itoa(int(message.StudentTaskID)), solution, 0); err != nil {
-				newErrorResponse(c, http.StatusInternalServerError, err.Error())
-				return
-			}
-
-			break
-
-		case "finish":
-			finishTime = time.Now()
-
-			var tempSolution models.StudentSolution
-			if err = h.service.Redis.Get(c, strconv.Itoa(int(message.StudentTaskID)), &tempSolution); err != nil {
-				newErrorResponse(c, http.StatusInternalServerError, err.Error())
-				return
-			}
-
-			tempSolution.TimeEnd = &finishTime
-			if err = h.service.Redis.Set(c, strconv.Itoa(int(message.StudentTaskID)), tempSolution, 0); err != nil {
-				newErrorResponse(c, http.StatusInternalServerError, err.Error())
-				return
-			}
-
-			break
+		if err := h.processMessage(c, message); err != nil {
+			newErrorResponse(c, http.StatusInternalServerError, err.Error())
+			return
 		}
 
 		if err := conn.WriteMessage(messageType, append(msg, []byte("Nice")...)); err != nil {
@@ -91,6 +52,51 @@ func (h *Handler) webSocket(c *gin.Context) {
 			return
 		}
 	}
+}
+
+func closeWebSocket(conn *websocket.Conn, c *gin.Context) {
+	if err := conn.Close(); err != nil {
+		newErrorResponse(c, http.StatusInternalServerError, "Fail to close websocket!")
+	}
+}
+
+func handleWebSocketError(c *gin.Context, err error) {
+	if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway) {
+		return
+	}
+	newErrorResponse(c, http.StatusInternalServerError, err.Error())
+}
+
+func (h *Handler) processMessage(c *gin.Context, message WebsocketMessage) error {
+	switch message.Message {
+	case "start":
+		return h.startTask(c, message.StudentTaskID)
+
+	case "finish":
+		return h.finishTask(c, message.StudentTaskID)
+	}
+	return nil
+}
+
+func (h *Handler) startTask(c *gin.Context, studentTaskID uint) error {
+	startTime := time.Now()
+	solution := models.StudentSolution{
+		TimeStart:     &startTime,
+		StudentTaskID: studentTaskID,
+	}
+	return h.service.Redis.Set(c, strconv.Itoa(int(studentTaskID)), solution, 0)
+}
+
+func (h *Handler) finishTask(c *gin.Context, studentTaskID uint) error {
+	finishTime := time.Now()
+
+	var tempSolution models.StudentSolution
+	if err := h.service.Redis.Get(c, strconv.Itoa(int(studentTaskID)), &tempSolution); err != nil {
+		return err
+	}
+
+	tempSolution.TimeEnd = &finishTime
+	return h.service.Redis.Set(c, strconv.Itoa(int(studentTaskID)), tempSolution, 0)
 }
 
 // @Summary Get all solutions

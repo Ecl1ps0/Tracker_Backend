@@ -6,6 +6,8 @@ import (
 	"gorm.io/gorm"
 )
 
+const ID_SELECT_PARAM = "id=?"
+
 type SolutionPostgres struct {
 	db *gorm.DB
 }
@@ -37,7 +39,7 @@ func (r *SolutionPostgres) GetSolutionsByStudentID(id uint) ([]models.StudentSol
 
 func (r *SolutionPostgres) GetSolutionByID(id uint) (models.StudentSolution, error) {
 	var solution models.StudentSolution
-	if result := r.db.Preload("Report").Where("id = ?", id).Find(&solution); result.Error != nil {
+	if result := r.db.Preload("Report").Where(ID_SELECT_PARAM, id).Find(&solution); result.Error != nil {
 		return models.StudentSolution{}, result.Error
 	}
 
@@ -76,7 +78,7 @@ func (r *SolutionPostgres) CreateSolution(solution models.StudentSolution) (uint
 }
 
 func (r *SolutionPostgres) UpdateCheatingRate(id uint, rate decimal.Decimal) error {
-	if result := r.db.Model(&models.StudentSolution{}).Where("id = ?", id).Update("CheatingResult", rate); result.Error != nil {
+	if result := r.db.Model(&models.StudentSolution{}).Where(ID_SELECT_PARAM, id).Update("CheatingResult", rate); result.Error != nil {
 		return result.Error
 	}
 
@@ -84,7 +86,7 @@ func (r *SolutionPostgres) UpdateCheatingRate(id uint, rate decimal.Decimal) err
 }
 
 func (r *SolutionPostgres) UpdateFinalGrade(id uint, grade decimal.Decimal) error {
-	if result := r.db.Model(&models.StudentSolution{}).Where("id = ?", id).Update("FinalGrade", grade); result.Error != nil {
+	if result := r.db.Model(&models.StudentSolution{}).Where(ID_SELECT_PARAM, id).Update("FinalGrade", grade); result.Error != nil {
 		return result.Error
 	}
 
