@@ -12,9 +12,7 @@ FROM python:slim
 
 WORKDIR /Proctor
 
-RUN groupadd -r proctor && useradd -r -g proctor proctor
-
-RUN mkdir -p /Proctor && chown -R proctor:proctor /Proctor
+RUN groupadd -r proctor && useradd -r -g proctor proctor && mkdir -p /Proctor && chown -R proctor:proctor /Proctor
 
 USER proctor
 
